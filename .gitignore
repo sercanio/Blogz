@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /Blogz/appsettings.json
 /Blogz/appsettings.Development.json
 /Blogz/blogz.db
+/Blogz/blogz.db-shm
+/Blogz/blogz.db-wal
