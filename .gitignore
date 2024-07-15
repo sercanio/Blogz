@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Blogz/appsettings.json
 /Blogz/appsettings.Development.json
+/Blogz/blogz.db
