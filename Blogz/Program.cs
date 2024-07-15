@@ -14,6 +14,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAntiforgery(opt => opt.Cookie.Name = "X-CSRF-TOKEN");
+
+builder.Services.ConfigureApplicationCookie(opt =>
+{
+    opt.Cookie.Name = "BlogZ";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
