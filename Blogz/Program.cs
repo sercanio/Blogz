@@ -16,6 +16,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddAntiforgery(opt => opt.Cookie.Name = "X-CSRF-TOKEN");
 
+builder.Services.AddWebOptimizer();
+
 builder.Services.ConfigureApplicationCookie(opt =>
 {
     opt.Cookie.Name = "BlogZ";
@@ -36,6 +38,8 @@ else
 }
 
 app.UseHttpsRedirection();
+
+app.UseWebOptimizer();
 app.UseStaticFiles();
 
 app.UseRouting();
