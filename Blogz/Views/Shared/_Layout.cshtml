@@ -38,21 +38,22 @@
             </a>
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li><a href="team.html">Team</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a asp-controller="Home" asp-action="Index" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Index") ? "active" : "")">Home</a></li>
+                    <li><a href="about.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "About") ? "active" : "")">About</a></li>
+                    <li><a href="services.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Services") ? "active" : "")">Services</a></li>
+                    <li><a href="portfolio.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Portfolio") ? "active" : "")">Portfolio</a></li>
+                    <li><a href="team.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Team") ? "active" : "")">Team</a></li>
+                    <li><a href="blog.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Blog") ? "active" : "")">Blog</a></li>
+                    <li><a href="contact.html" class="@((ViewContext.RouteData.Values["Controller"] as string == "Home" && ViewContext.RouteData.Values["Action"] as string == "Contact") ? "active" : "")">Contact</a></li>
                     <partial name="_LoginPartial" />
-                    <li id="themeToggle" class=" ms-3 mt-1" title="Toggle Theme">
+                    <li id="themeToggle" class="ms-4" title="Toggle Theme">
                         <i id="moonicon" class="fas fa-moon theme-switch-widget"></i>
                         <i id="sunicon" class="fas fa-sun theme-switch-widget"></i>
                     </li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
+
         </div>
     </header>
     <div class="container">
@@ -169,7 +170,6 @@
         crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/main.js" asp-append-version="true"></script>
     <script src="~/lib/php-email-form/validate.js"></script>
     <script src="~/lib/aos/aos.js"></script>

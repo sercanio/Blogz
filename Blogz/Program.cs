@@ -1,22 +1,29 @@
-using Blogz.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Application;
+using NArchitecture.Core.CrossCuttingConcerns.Logging.Configurations;
+using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddPersistenceServices(builder.Configuration);
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddApplicationServices(
+    fileLogConfiguration: builder
+        .Configuration.GetSection("SeriLogConfigurations:FileLogConfiguration")
+        .Get<FileLogConfiguration>()
+        ?? throw new InvalidOperationException("FileLogConfiguration section cannot found in configuration.")
+);
+
+builder.Services.AddLogging();
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRazorPages();
 
 builder.Services.AddAntiforgery(opt => opt.Cookie.Name = "X-CSRF-TOKEN");
 
 builder.Services.AddWebOptimizer();
+
+
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
@@ -52,3 +59,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+

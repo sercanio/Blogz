@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="AutoMapper" Version="13.0.1" />
+	  <PackageReference Include="MediatR" Version="12.2.0" />
+	  <PackageReference Include="NArchitecture.Core.Application" Version="1.0.5" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Exception" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Exception.WebApi" Version="1.1.1" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Logging" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Logging.DependencyInjection" Version="1.0.2" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Logging.Serilog" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Logging.Serilog.File" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.Localization.Abstraction" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.Localization.Resource.Yaml" Version="1.0.2" />
+	  <PackageReference Include="NArchitecture.Core.Localization.Resource.Yaml.DependencyInjection" Version="1.0.2" />
+	  <PackageReference Include="NArchitecture.Core.Localization.WebApi" Version="1.0.1" />
+	  <PackageReference Include="NArchitecture.Core.Persistence.DependencyInjection" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Authors\Queries\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

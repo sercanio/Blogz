@@ -1,0 +1,12 @@
+
+.nav-pills .nav-link {
+    color: var(--accent-color);
+}
+
+.nav-pills .active {
+    background-color: var(--accent-color) !important;
+}
+
+.form-floating .btn-link{
+    color: var(--accent-color) !important;
+}
