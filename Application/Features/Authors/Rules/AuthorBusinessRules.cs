@@ -7,12 +7,12 @@ using Persistence.Repositories.Abstractions;
 
 namespace Application.Features.Authors.Rules;
 
-public class AuthBusinessRules : BaseBusinessRules
+public class AuthorBusinessRules : BaseBusinessRules
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly ILocalizationService _localizationService;
 
-    public AuthBusinessRules(IAuthorRepository authorRepository, ILocalizationService localizationService)
+    public AuthorBusinessRules(IAuthorRepository authorRepository, ILocalizationService localizationService)
     {
         _authorRepository = authorRepository;
         _localizationService = localizationService;

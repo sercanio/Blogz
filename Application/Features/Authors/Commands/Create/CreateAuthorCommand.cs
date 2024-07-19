@@ -28,7 +28,6 @@ public class CreateAuthorCommand : IRequest<CreatedAuthorResponse>, ILoggableReq
         public async Task<CreatedAuthorResponse> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
 
-
             Author author = _mapper.Map<Author>(request);
 
             var savedAuthor = await _authorRepository.AddAsync(author);
