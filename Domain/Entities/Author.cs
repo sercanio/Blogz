@@ -6,9 +6,11 @@ namespace Domain.Entities;
 public class Author : Entity<Guid>
 {
     public string UserId { get; set; }
+    public Guid BlogId { get; set; }
     public string? ProfileImageURL { get; set; }
     public string? Biography { get; set; }
 
     public ICollection<Comment> Comments { get; set; }
     public IdentityUser User { get; set; }
+    public Blog Blog { get; set; }
 }

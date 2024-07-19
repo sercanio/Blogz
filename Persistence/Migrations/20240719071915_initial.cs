@@ -126,6 +126,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    BlogId = table.Column<Guid>(type: "TEXT", nullable: false),
                     ProfilePictureImageURL = table.Column<string>(type: "TEXT", nullable: true),
                     Biography = table.Column<string>(type: "TEXT", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -149,8 +150,6 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     AuthorId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CoverImageURL = table.Column<string>(type: "TEXT", nullable: false),
-                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
@@ -167,13 +166,36 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    BlogId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CoverImageURL = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_Blogs_BlogId",
+                        column: x => x.BlogId,
+                        principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     AuthorId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Content = table.Column<string>(type: "TEXT", nullable: false),
-                    BlogId = table.Column<Guid>(type: "TEXT", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
@@ -188,10 +210,11 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_Blogs_BlogId",
-                        column: x => x.BlogId,
-                        principalTable: "Blogs",
-                        principalColumn: "Id");
+                        name: "FK_Comments_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,7 +225,7 @@ namespace Persistence.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     NormalizedName = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    BlogId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    PostId = table.Column<Guid>(type: "TEXT", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "TEXT", nullable: true)
@@ -211,14 +234,14 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_Tags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tags_Blogs_BlogId",
-                        column: x => x.BlogId,
-                        principalTable: "Blogs",
+                        name: "FK_Tags_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "Author_UserID_UK",
+                name: "IX_Authors_UserId",
                 table: "Authors",
                 column: "UserId",
                 unique: true);
@@ -226,22 +249,34 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Blogs_AuthorId",
                 table: "Blogs",
-                column: "AuthorId");
+                column: "AuthorId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_AuthorId",
+                name: "Comment_AuthorId_Index",
                 table: "Comments",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_BlogId",
+                name: "Comment_PostId_Index",
                 table: "Comments",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_BlogId",
+                table: "Posts",
                 column: "BlogId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tags_BlogId",
+                name: "IX_Tags_PostId",
                 table: "Tags",
-                column: "BlogId");
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "Tag_NormalizedName_UK",
+                table: "Tags",
+                column: "NormalizedName",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -270,6 +305,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Blogs");

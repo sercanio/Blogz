@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices(builder.Configuration);
 
+
 builder.Services.AddApplicationServices(
     fileLogConfiguration: builder
         .Configuration.GetSection("SeriLogConfigurations:FileLogConfiguration")

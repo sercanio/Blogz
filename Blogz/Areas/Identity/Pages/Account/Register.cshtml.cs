@@ -183,8 +183,6 @@ namespace Blogz.Areas.Identity.Pages.Account
                 ProfilePictureUrl = "avatar.png"
             };
             var response = await _mediator.Send(command);
-
-            //return CreatedAtAction(nameof(GetById), new { response.Id }, response);
         }
 
         private IUserEmailStore<IdentityUser> GetEmailStore()

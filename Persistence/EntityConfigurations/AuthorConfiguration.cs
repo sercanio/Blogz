@@ -18,9 +18,13 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
         builder.Property(a => a.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(a => a.DeletedDate).HasColumnName("DeletedDate");
 
-        builder.HasIndex(a => a.UserId, "Author_UserID_UK").IsUnique();
+        builder.HasIndex(a => a.UserId).IsUnique();
 
         builder.HasOne(a => a.User);
+
+        builder.HasOne(a => a.Blog)
+            .WithOne(b => b.Author)
+            .HasForeignKey<Author>(a => a.BlogId);
 
         builder.HasQueryFilter(a => !a.DeletedDate.HasValue);
     }

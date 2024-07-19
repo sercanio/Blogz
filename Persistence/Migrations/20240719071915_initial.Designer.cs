@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240718103758_initial")]
+    [Migration("20240719071915_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -30,6 +30,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Biography")
                         .HasColumnType("TEXT")
                         .HasColumnName("Biography");
+
+                    b.Property<Guid>("BlogId")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("TEXT")
@@ -54,7 +57,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "UserId" }, "Author_UserID_UK")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Authors", (string)null);
@@ -64,103 +67,158 @@ namespace Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
 
                     b.Property<Guid>("AuthorId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CoverImageURL")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("AuthorId");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("CreatedDate");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DeletedDate");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UpdatedDate");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId")
+                        .IsUnique();
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
 
                     b.Property<Guid>("AuthorId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("BlogId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("AuthorId");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Content");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("CreatedDate");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DeletedDate");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("PostId");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UpdatedDate");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex(new[] { "AuthorId" }, "Comment_AuthorId_Index");
+
+                    b.HasIndex(new[] { "PostId" }, "Comment_PostId_Index");
+
+                    b.ToTable("Comments", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Post", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<Guid>("BlogId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("BlogId");
+
+                    b.Property<string>("CoverImageURL")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("CoverImageURL");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("CreatedDate");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DeletedDate");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("IsPublic");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UpdatedDate");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BlogId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("BlogId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("CreatedDate");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("DeletedDate");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Description");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Name");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("NormalizedName");
+
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT")
+                        .HasColumnName("UpdatedDate");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BlogId");
+                    b.HasIndex("PostId");
 
-                    b.ToTable("Tags");
+                    b.HasIndex(new[] { "NormalizedName" }, "Tag_NormalizedName_UK")
+                        .IsUnique();
+
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -339,8 +397,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Blog", b =>
                 {
                     b.HasOne("Domain.Entities.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
+                        .WithOne("Blog")
+                        .HasForeignKey("Domain.Entities.Blog", "AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -355,26 +413,49 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Blog", null)
+                    b.HasOne("Domain.Entities.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("BlogId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Post", b =>
+                {
+                    b.HasOne("Domain.Entities.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
                 {
-                    b.HasOne("Domain.Entities.Blog", null)
+                    b.HasOne("Domain.Entities.Post", null)
                         .WithMany("Tags")
-                        .HasForeignKey("BlogId");
+                        .HasForeignKey("PostId");
                 });
 
             modelBuilder.Entity("Domain.Entities.Author", b =>
                 {
+                    b.Navigation("Blog")
+                        .IsRequired();
+
                     b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Blog", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
 

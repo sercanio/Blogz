@@ -14,13 +14,12 @@ public static class PersistenceServiceRegistration
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+             .AddRoles<IdentityRole>()
+             .AddEntityFrameworkStores<ApplicationDbContext>();
+
         services.AddDbMigrationApplier(buildServices => buildServices.GetRequiredService<ApplicationDbContext>());
-
-        services.AddDbMigrationApplier(buildServices =>
-            buildServices.GetRequiredService<ApplicationDbContext>());
-
-        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                     .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
