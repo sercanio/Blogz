@@ -1,0 +1,27 @@
+﻿@model Blogz.Models.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<h2>@Model.Author.User.UserName's Blog</h2>
+
+<div>
+    <h3>Author Details</h3>
+    <p>Name: @Model.Author.User.UserName</p>
+    <p>Bio: @Model.Author.Biography</p>
+</div>
+
+<div>
+    <h3>Blog Posts</h3>
+    <ul>
+        @foreach (var post in Model.Author.Blog.Posts)
+        {
+            <li>
+                <h4>@post.Title</h4>
+                <p>@post.Content</p>
+                <p><em>Posted on @post.CreatedDate.ToString("MMMM dd, yyyy")</em></p>
+            </li>
+        }
+    </ul>
+</div>

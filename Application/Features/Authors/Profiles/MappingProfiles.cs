@@ -1,4 +1,5 @@
 ﻿using Application.Features.Authors.Commands.Create;
+using Application.Features.Authors.Queries.GetById;
 using AutoMapper;
 using Domain.Entities;
 
@@ -11,5 +12,7 @@ public class MappingProfiles : Profile
 
         CreateMap<CreateAuthorCommand, Author>();
         CreateMap<Author, CreatedAuthorResponse>();
+
+        CreateMap<Author, GetByIdAuthorResponse>();
     }
 }

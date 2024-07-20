@@ -13,7 +13,8 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
              .AddRoles<IdentityRole>()
@@ -24,6 +25,7 @@ public static class PersistenceServiceRegistration
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IBlogRepository, BlogRepository>();
 
         return services;
     }

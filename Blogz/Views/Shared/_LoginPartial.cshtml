@@ -10,7 +10,12 @@
             <a href="#"><span>@User.Identity?.Name</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
                 <li>
-                    <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Manage/Index") ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile</a>
+                    <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == $"/Blogs/{User.Identity?.Name}") ? "active" : "")"
+                       href="@Url.Content($"/Blogs/{User.Identity?.Name}")"
+                       title="My Blog">My Blog</a>
+                </li>
+                <li>
+                    <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Manage/Index") ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Settings</a>
                 </li>
                 <li>
                     <form class="nav-link form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-page-handler="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

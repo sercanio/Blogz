@@ -2,7 +2,6 @@
 using Domain.Entities;
 using NArchitecture.Core.Application.Rules;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
-using NArchitecture.Core.Localization.Abstraction;
 using Persistence.Repositories.Abstractions;
 
 namespace Application.Features.Authors.Rules;
@@ -10,18 +9,18 @@ namespace Application.Features.Authors.Rules;
 public class AuthorBusinessRules : BaseBusinessRules
 {
     private readonly IAuthorRepository _authorRepository;
-    private readonly ILocalizationService _localizationService;
+    //private readonly ILocalizationService _localizationService;
 
-    public AuthorBusinessRules(IAuthorRepository authorRepository, ILocalizationService localizationService)
+    public AuthorBusinessRules(IAuthorRepository authorRepository)
     {
         _authorRepository = authorRepository;
-        _localizationService = localizationService;
+        //_localizationService = localizationService;
     }
 
     private async Task throwBusinessException(string messageKey)
     {
-        string message = await _localizationService.GetLocalizedAsync(messageKey, AuthorsBusinessMessages.SectionName);
-        throw new BusinessException(message);
+        //string message = await _localizationService.GetLocalizedAsync(messageKey, AuthorsBusinessMessages.SectionName);
+        throw new BusinessException(messageKey);
     }
 
     public async Task AuthorShouldExistWhenSelected(Author? author)
