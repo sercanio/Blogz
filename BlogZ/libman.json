@@ -5,6 +5,38 @@
     {
       "library": "bootstrap@5.3.3",
       "destination": "wwwroot\\lib\\bootstrap"
+    },
+    {
+      "provider": "unpkg",
+      "library": "imagesloaded@5.0.0",
+      "destination": "wwwroot\\lib\\imagesloaded"
+    },
+    {
+      "provider": "unpkg",
+      "library": "isotope@1.0.0-alpha.3",
+      "destination": "wwwroot\\lib\\isotope-layout"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "swiper@11.1.5",
+      "destination": "wwwroot\\lib\\swiper"
+    },
+    {
+      "library": "jquery@3.7.1",
+      "destination": "wwwroot\\lib\\jquery"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "jquery-validation@1.21.0",
+      "destination": "wwwroot\\lib\\jquery-validation"
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot\\lib\\jquery-validation-unobtrusive"
+    },
+    {
+      "library": "bootstrap-icons@1.11.3",
+      "destination": "wwwroot\\lib\\bootstrap-icons"
     }
   ]
 }
