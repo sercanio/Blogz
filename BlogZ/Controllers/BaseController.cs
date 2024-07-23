@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using Blogz.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Security.Extensions;
+using System.Diagnostics;
 
 namespace WebAPI.Controllers;
 
-public class BaseController : ControllerBase
+public class BaseController : Controller
 {
     protected IMediator Mediator =>
         _mediator ??=
@@ -27,4 +29,29 @@ public class BaseController : ControllerBase
         var userId = Guid.Parse(HttpContext.User.GetIdClaim()!);
         return userId;
     }
+
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    [Route("Home/NotFoundHand")]
+    public IActionResult NotFoundHandler(int statusCode)
+    {
+        string message = statusCode == 404 ? "Page not found." : "An unexpected error occurred.";
+        return PageNotFound(message);
+    }
+
+    public IActionResult PageNotFound(string message = "Page not found.")
+    {
+        PageNotFoundViewModel model = new PageNotFoundViewModel()
+        {
+            Message = message,
+        };
+
+        return View("PageNotFound", model);
+    }
+
 }

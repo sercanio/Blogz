@@ -26,6 +26,7 @@ public static class PersistenceServiceRegistration
 
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBlogRepository, BlogRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
 
         return services;
     }

@@ -1,10 +1,10 @@
 ﻿using Application.Features.Authors.Queries.GetById;
-using Domain.Entities;
+using Application.Features.Posts.Queries.GetBySlug;
 
 namespace Blogz.Models;
 
-public class UserProfileViewModel
+public class PostViewModel
 {
+    public GetBySlugPostResponse Post { get; set; }
     public GetByIdAuthorResponse Author { get; set; }
-    public IEnumerable<Post> BlogPosts { get; set; }
 }

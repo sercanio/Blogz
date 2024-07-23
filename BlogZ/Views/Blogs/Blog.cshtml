@@ -1,0 +1,37 @@
+﻿@model Blogz.Models.BlogViewModel
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<partial name="_BlogHeaderPartial" />
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            @foreach (var post in Model.BlogPosts.Items)
+            {
+                <!-- Post preview-->
+                <div class="post-preview">
+                    <a href="@Url.Action("Post", "Posts", new { username = Model.Author.User.UserName, slug = post.Slug })">
+                        <h2 class="post-title">@post.Title</h2>
+                        <h3 class="post-subtitle">@Html.Raw(HtmlHelpers.TruncateHtml(post.Content, 100))</h3>
+                    </a>
+                    <p class="post-meta">
+                        Posted by
+                        <a href="@Url.Action("Blog", "Blogs", new { username = Model.Author.User.UserName })">@Model.Author.User.UserName</a>
+                        on @post.CreatedDate.ToString("MMMM dd, yyyy")
+                    </p>
+                </div>
+                <!-- Divider-->
+                <hr class="my-4" />
+            }
+            <!-- Pager-->
+            <div class="d-flex justify-content-end mb-4"><a class="btn btn-link text-uppercase" href="#!">Older Posts →</a></div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/blog.css" rel="stylesheet">
+}

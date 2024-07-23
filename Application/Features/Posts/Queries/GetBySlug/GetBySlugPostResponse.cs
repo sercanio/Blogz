@@ -1,8 +1,10 @@
-﻿using NArchitecture.Core.Persistence.Repositories;
+using Application.Features.Blogs.Queries.GetById;
+using Domain.Entities;
+using NArchitecture.Core.Application.Responses;
 
-namespace Domain.Entities;
+namespace Application.Features.Posts.Queries.GetBySlug;
 
-public class Post : Entity<Guid>
+public class GetBySlugPostResponse : IResponse
 {
     public Guid BlogId { get; set; }
     public string Title { get; set; }
@@ -10,8 +12,9 @@ public class Post : Entity<Guid>
     public string Slug { get; set; }
     public bool IsPublic { get; set; }
     public string CoverImageURL { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-    public Blog Blog { get; set; }
+    public GetByIdBlogResponse Blog { get; set; }
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Tag> Tags { get; set; }
 }

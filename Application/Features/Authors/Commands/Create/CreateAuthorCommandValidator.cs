@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Application.Features.Authors.Commands.Create;
 
-public class CreateAuthorCommandValidator : AbstractValidator<CreateAuthorCommand>
+public class CreatePostCommandValidator : AbstractValidator<CreateAuthorCommand>
 {
-    public CreateAuthorCommandValidator()
+    public CreatePostCommandValidator()
     {
     }
 }

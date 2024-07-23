@@ -1,40 +1,42 @@
 ﻿using Application.Features.Authors.Queries.GetById;
+using Application.Features.Authors.Rules;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Repositories.Abstractions;
 
-namespace Application.Features.Authors.Queries.GetByUserId
+namespace Application.Features.Authors.Queries.GetByUserId;
+
+public class GetByUserIdAuthorQuery : IRequest<GetByIdAuthorResponse>
 {
-    public class GetByUserIdAuthorQuery : IRequest<GetByIdAuthorResponse>
+    public required string UserId { get; set; }
+
+    public class GetByUserIdAuthorQueryHandler : IRequestHandler<GetByUserIdAuthorQuery, GetByIdAuthorResponse>
     {
-        public required string UserId { get; set; }
+        private readonly IMapper _mapper;
+        private readonly IAuthorRepository _authorRepository;
+        private readonly AuthorBusinessRules _authorBusinessRules;
 
-        public class GetByUserIdAuthorQueryHandler : IRequestHandler<GetByUserIdAuthorQuery, GetByIdAuthorResponse>
+        public GetByUserIdAuthorQueryHandler(IMapper mapper, IAuthorRepository authorRepository, AuthorBusinessRules authorBusinessRules)
         {
-            private readonly IMapper _mapper;
-            private readonly IAuthorRepository _authorRepository;
+            _mapper = mapper;
+            _authorRepository = authorRepository;
+            _authorBusinessRules = authorBusinessRules;
+        }
 
-            public GetByUserIdAuthorQueryHandler(IMapper mapper, IAuthorRepository authorRepository)
-            {
-                _mapper = mapper;
-                _authorRepository = authorRepository;
-            }
+        public async Task<GetByIdAuthorResponse> Handle(GetByUserIdAuthorQuery request, CancellationToken cancellationToken)
+        {
+            Author? author = await _authorRepository.GetAsync(
+                predicate: a => a.UserId == request.UserId,
+                include: a => a.Include(a => a.Blog).ThenInclude(b => b.Posts),
+            cancellationToken: cancellationToken);
 
-            public async Task<GetByIdAuthorResponse> Handle(GetByUserIdAuthorQuery request, CancellationToken cancellationToken)
-            {
-                Author? author = await _authorRepository.GetAsync(
-                    predicate: a => a.UserId == request.UserId,
-                    include: a => a.Include(a => a.Blog).ThenInclude(b => b.Posts),
-                    cancellationToken: cancellationToken);
+            await _authorBusinessRules.AuthorShouldExistWhenSelected(author);
 
-                GetByIdAuthorResponse response = _mapper.Map<GetByIdAuthorResponse>(author);
+            GetByIdAuthorResponse response = _mapper.Map<GetByIdAuthorResponse>(author);
 
-                return response;
-            }
-
-
+            return response;
         }
     }
 }

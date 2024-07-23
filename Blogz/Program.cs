@@ -54,6 +54,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseStatusCodePagesWithReExecute("/Home/PageNotFound", "?statusCode={0}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -61,8 +63,18 @@ app.MapControllerRoute(
 app.MapControllerRoute(
       name: "blogs",
       pattern: "blogs/{username}",
-      defaults: new { controller = "Blog", action = "Details" }
-  );
+      defaults: new { controller = "Blogs", action = "Blog" });
+
+app.MapControllerRoute(
+    name: "get-post",
+    pattern: "blogs/{username}/post/{slug}",
+    defaults: new { controller = "Posts", action = "Post" });
+
+app.MapControllerRoute(
+    name: "create-post",
+    pattern: "posts/{username}/create",
+    defaults: new { controller = "Posts", action = "Create" });
+
 
 app.MapRazorPages();
 

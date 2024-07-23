@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Authors\Queries\" />
-    <Folder Include="Features\Blogs\" />
   </ItemGroup>
 
   <ItemGroup>

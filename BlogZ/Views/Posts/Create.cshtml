@@ -1,0 +1,75 @@
+﻿@model Blogz.Models.CreatePostViewModel
+
+@{
+    ViewData["Title"] = "Create New Post";
+}
+
+<h1>Create New Post</h1>
+
+<partial name="_BlogHeaderPartial" />
+
+<form asp-action="Create" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
+    <div class="form-group d-flex gap-2 align-items-center">
+        <div class="flex-fill">
+            <label asp-for="Title" class="control-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-check w-25 mt-3 d-flex flex-column justify-content-center align-items-center">
+            <div>
+                <label asp-for="IsPublic" class="control-label form-check-label">Public</label>
+                <input asp-for="IsPublic" type="checkbox" class="form-check-input" />
+                <span asp-validation-for="IsPublic" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group mt-2">
+        <label asp-for="Content" class="control-label"></label>
+        <span asp-validation-for="Content" class="text-danger"></span>
+        <textarea asp-for="Content" class="form-control">
+            Welcome to TinyMCE!
+        </textarea>
+    </div>
+    <div class="form-group mt-3">
+        <input type="submit" value="Create" class="btn btn-new-post" />
+    </div>
+</form>
+
+@section Scripts {
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/dmjmi2i6ow7orwe5hnliu17c9jgmzwy5gdjb59qctogrnve6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function initializeTinyMCE(theme) {
+                console.log("Initializing TinyMCE with theme:", theme);
+                tinymce.remove();
+                tinymce.init({
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    skin: theme === "light" ? "oxide" : "oxide-dark",
+                    content_css: theme === "light" ? "/css/editor-light.css" : "/css/editor-dark.css",
+                    content_style: theme === "light"
+                        ? "body { background-color: #ffffff; color: #000000; }"
+                        : "body { background-color: #1e1e1e; color: #dcdcdc; }"
+                });
+            }
+
+            var siteTheme = document.querySelector("html").getAttribute("data-bs-theme");
+            console.log("Initial theme:", siteTheme);
+            initializeTinyMCE(siteTheme);
+
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.attributeName === "data-bs-theme") {
+                        var newTheme = mutation.target.getAttribute("data-bs-theme");
+                        console.log("New theme:", newTheme);
+                        initializeTinyMCE(newTheme);
+                    }
+                });
+            });
+
+            observer.observe(document.querySelector("html"), { attributes: true });
+        });
+    </script>
+}

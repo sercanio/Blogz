@@ -10,8 +10,8 @@
             <a href="#"><span>@User.Identity?.Name</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
                 <li>
-                    <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == $"/Blogs/{User.Identity?.Name}") ? "active" : "")"
-                       href="@Url.Content($"/Blogs/{User.Identity?.Name}")"
+                    <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == $"/blogs/{User.Identity?.Name}") ? "active" : "")"
+                       href="@Url.Content($"/blogs/{User.Identity?.Name}")"
                        title="My Blog">My Blog</a>
                 </li>
                 <li>

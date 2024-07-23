@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240720093128_init")]
-    partial class init
+    [Migration("20240722213501_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,17 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Authors", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2e1d5e51-268e-4d57-9552-ecc4f96342fa"),
+                            Biography = "This is John Doe's biography.",
+                            BlogId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProfileImageURL = "https://example.com/profilepicture.jpg",
+                            UserId = "21c958ca-ddd0-4644-bab9-1c6aabc5c0e2"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Blog", b =>
@@ -97,6 +108,14 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Blogs", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            AuthorId = new Guid("2e1d5e51-268e-4d57-9552-ecc4f96342fa"),
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2303)
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
@@ -172,6 +191,10 @@ namespace Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("IsPublic");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -185,6 +208,63 @@ namespace Persistence.Migrations
                     b.HasIndex("BlogId");
 
                     b.ToTable("Posts", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c6ee3459-a669-48fe-b96a-a2613a10eeee"),
+                            BlogId = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            Content = "This post covers the basics of programming...",
+                            CoverImageURL = "https://example.com/cover1.jpg",
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2363),
+                            IsPublic = true,
+                            Slug = "introduction-to-programming",
+                            Title = "Introduction to Programming"
+                        },
+                        new
+                        {
+                            Id = new Guid("5177bc7b-9829-4d0c-9260-903facca2621"),
+                            BlogId = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            Content = "This post delves into advanced concepts in software engineering...",
+                            CoverImageURL = "https://example.com/cover2.jpg",
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2368),
+                            IsPublic = true,
+                            Slug = "advanced-software-engineering",
+                            Title = "Advanced Software Engineering"
+                        },
+                        new
+                        {
+                            Id = new Guid("ef33b9e4-9a05-4047-8a90-94b5c5f81bc6"),
+                            BlogId = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            Content = "Exploring the fascinating world of science...",
+                            CoverImageURL = "https://example.com/cover3.jpg",
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2372),
+                            IsPublic = true,
+                            Slug = "th-Wonders-of-science",
+                            Title = "The Wonders of Science"
+                        },
+                        new
+                        {
+                            Id = new Guid("07d249e3-a64c-46f9-a1ed-c6f95ee9414f"),
+                            BlogId = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            Content = "A comprehensive guide to building web applications with ASP.NET Core MVC...",
+                            CoverImageURL = "https://example.com/cover4.jpg",
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2374),
+                            IsPublic = true,
+                            Slug = "asp.net-core-mvc-tutorial",
+                            Title = "ASP.NET Core MVC Tutorial"
+                        },
+                        new
+                        {
+                            Id = new Guid("c651c5ab-f9ec-492c-8055-48d246f917ae"),
+                            BlogId = new Guid("5b6b8840-5345-4cb8-b12a-b4a6dff8c5de"),
+                            Content = "Discussing the best practices every programmer should follow...",
+                            CoverImageURL = "https://example.com/cover5.jpg",
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2376),
+                            IsPublic = true,
+                            Slug = "best-ractices-in-rogramming",
+                            Title = "Best Practices in Programming"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
@@ -232,6 +312,40 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Tags", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("05a4d57d-03f3-417a-b167-4f8c48d0d3e7"),
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2322),
+                            Description = "All things programming",
+                            Name = "#Programming",
+                            NormalizedName = "#PROGRAMMING"
+                        },
+                        new
+                        {
+                            Id = new Guid("580ad651-78da-4a01-abf7-f69c3530c3f7"),
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2352),
+                            Description = "Software engineering topics",
+                            Name = "#SoftwareEngineering",
+                            NormalizedName = "#SOFTWAREENGINEERING"
+                        },
+                        new
+                        {
+                            Id = new Guid("560bb08d-f954-4d11-9731-5c7b4177c378"),
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2354),
+                            Description = "Scientific discoveries and discussions",
+                            Name = "#Science",
+                            NormalizedName = "#SCIENCE"
+                        },
+                        new
+                        {
+                            Id = new Guid("57f63417-fcb6-4259-988c-863b243867e9"),
+                            CreatedDate = new DateTime(2024, 7, 22, 21, 35, 1, 230, DateTimeKind.Utc).AddTicks(2355),
+                            Description = "ASP.NET related content",
+                            Name = "#ASP.Net",
+                            NormalizedName = "#ASP.NET"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -325,6 +439,24 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "21c958ca-ddd0-4644-bab9-1c6aabc5c0e2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "80d55535-89eb-4a37-aa05-4d60473f95e2",
+                            Email = "johndoe@email.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JOHNDOE@EMAIL.COM",
+                            NormalizedUserName = "JOHNDOE",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGqtxt6dsGeJzexSGPDLFoe4opiIAWNHej0ncSlZWL8h1M4mFY+BVz48n4wZV6gPXg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "johndoe"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>

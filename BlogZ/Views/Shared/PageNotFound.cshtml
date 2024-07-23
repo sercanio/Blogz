@@ -1,0 +1,27 @@
+﻿@model PageNotFoundViewModel
+
+@{
+    ViewData["Title"] = "404";
+}
+
+<section class="d-flex flex-column justify-content-center align-items-center">
+    <h1 class="text-danger">404</h1>
+    <p>@Model.Message</p>
+
+    <p>
+        Please check the URL and try again. If you believe this is an error, contact support.
+    </p>
+
+    <ul>
+        <li><a href="/">Go to Homepage</a></li>
+        <li><a href="/Contact">Contact Support</a></li>
+    </ul>
+</section>
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+</style>

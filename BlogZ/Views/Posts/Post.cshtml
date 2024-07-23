@@ -1,0 +1,40 @@
+﻿@model Blogz.Models.PostViewModel
+
+@{
+    ViewData["Title"] = Model.Post?.Title ?? "Post";
+}
+
+<partial name="_BlogHeaderPartial" />
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post content-->
+            <article class="w-100 d-flex flex-column gap-2">
+                <h1 class="post-title">@Model?.Post?.Title</h1>
+                <p class="post-meta">
+                    Posted by
+                    <a href="@Url.Action("Blog", "Blogs", new { username = Model?.Author?.User?.UserName })">@Model?.Author?.User?.UserName</a>
+                    on @Model?.Post?.CreatedDate.ToString("MMMM dd, yyyy")
+                </p>
+                @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Author.User.UserName)
+                {
+                    <div>
+                        <a href="@Url.Action("Edit", "Posts", new { username = Model.Author.User.UserName, slug = Model.Post.Slug })" class="mb-2 ml-auto">Edit Post</a>
+                    </div>
+                }
+                <!-- Divider-->
+                <hr class="my-4" />
+                <div>
+                    @Html.Raw(Model?.Post?.Content)
+                </div>
+            </article>
+            <!-- Divider-->
+            <hr class="my-4" />
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/css/blog.css" rel="stylesheet">
+}
