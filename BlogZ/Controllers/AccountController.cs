@@ -28,7 +28,6 @@ public class AccountController : Controller
 
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        // Assume _signInManager.GetExternalAuthenticationSchemesAsync() is handled elsewhere or removed
         List<AuthenticationScheme>? externalLogins = null;
 
         LoginViewModel model = new LoginViewModel
@@ -98,7 +97,6 @@ public class AccountController : Controller
             return LocalRedirect(response.ReturnUrl);
         }
 
-        // Handle failure case if necessary
         return RedirectToAction("Index", "Home");
     }
 
