@@ -1,4 +1,3 @@
-using Application.Features.Authors.Rules;
 using Application.Services.Blogs;
 using AutoMapper;
 using Domain.Entities;
@@ -19,14 +18,12 @@ public class CreateAuthorCommand : IRequest<CreatedAuthorResponse>, ILoggableReq
     {
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository;
-        private readonly AuthorBusinessRules _authorBusinessRules;
         private readonly IBlogService _blogService;
 
-        public CreateAuthorCommandHandler(IMapper mapper, IAuthorRepository authorRepository, AuthorBusinessRules authorBusinessRules, IBlogService blogService)
+        public CreateAuthorCommandHandler(IMapper mapper, IAuthorRepository authorRepository, IBlogService blogService)
         {
             _mapper = mapper;
             _authorRepository = authorRepository;
-            _authorBusinessRules = authorBusinessRules;
             _blogService = blogService;
         }
 

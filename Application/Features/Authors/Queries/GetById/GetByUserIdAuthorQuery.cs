@@ -1,5 +1,4 @@
 ﻿using Application.Features.Authors.Queries.GetById;
-using Application.Features.Authors.Rules;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -16,13 +15,11 @@ public class GetByUserIdAuthorQuery : IRequest<GetByIdAuthorResponse>
     {
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository;
-        private readonly AuthorBusinessRules _authorBusinessRules;
 
-        public GetByUserIdAuthorQueryHandler(IMapper mapper, IAuthorRepository authorRepository, AuthorBusinessRules authorBusinessRules)
+        public GetByUserIdAuthorQueryHandler(IMapper mapper, IAuthorRepository authorRepository)
         {
             _mapper = mapper;
             _authorRepository = authorRepository;
-            _authorBusinessRules = authorBusinessRules;
         }
 
         public async Task<GetByIdAuthorResponse> Handle(GetByUserIdAuthorQuery request, CancellationToken cancellationToken)
@@ -31,8 +28,6 @@ public class GetByUserIdAuthorQuery : IRequest<GetByIdAuthorResponse>
                 predicate: a => a.UserId == request.UserId,
                 include: a => a.Include(a => a.Blog).ThenInclude(b => b.Posts),
             cancellationToken: cancellationToken);
-
-            await _authorBusinessRules.AuthorShouldExistWhenSelected(author);
 
             GetByIdAuthorResponse response = _mapper.Map<GetByIdAuthorResponse>(author);
 

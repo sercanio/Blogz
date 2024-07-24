@@ -1,5 +1,6 @@
 ﻿using Application.Features.Authors.Queries.GetById;
 using Application.Features.Authors.Queries.GetByUserId;
+using Application.Features.Entries.Commands.Update;
 using Application.Features.Posts.Commands.Create;
 using Application.Features.Posts.Queries.GetBySlug;
 using Blogz.Models;
@@ -107,6 +108,90 @@ public class PostsController : BaseController
         CreatedPostResponse? result = await _mediator.Send(command);
 
         return RedirectToAction("Post", new { username = username, slug = result.Slug });
+    }
+
+    [HttpGet("posts/{username}/edit/{slug}")]
+    [Authorize]
+    public async Task<IActionResult> Edit(string username, string slug)
+    {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
+        {
+            return BadRequest("Username or slug cannot be null or empty");
+        }
+
+        // Ensure the authenticated user is the author
+        if (User.Identity.Name != username)
+        {
+            return Forbid();
+        }
+
+        // Get the post by slug
+        GetBySlugPostQuery postQuery = new() { Slug = slug };
+        GetBySlugPostResponse? post = await _mediator.Send(postQuery);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        // Assuming the post object has an Author property
+        GetByIdAuthorResponse? author = post.Blog?.Author;
+
+        if (author == null)
+        {
+            return NotFound();
+        }
+
+        // Create a view model and pass it to the view
+        CreatePostViewModel viewModel = new()
+        {
+            Author = author
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost("posts/{username}/edit/{slug}")]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(string username, string slug, CreatePostViewModel model)
+    {
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
+        {
+            return BadRequest("Username or slug cannot be null or empty");
+        }
+
+        // Ensure the authenticated user is the author
+        if (User.Identity.Name != username)
+        {
+            return Forbid();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        // Get the post by slug
+        GetBySlugPostQuery postQuery = new() { Slug = slug };
+        GetBySlugPostResponse? post = await _mediator.Send(postQuery);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        // Create an update command
+        UpdatePostCommand command = new()
+        {
+            Id = post.Id, // Ensure you have the post ID for updating
+            Title = model.Title,
+            Content = model.Content
+        };
+
+        await _mediator.Send(command);
+
+        return RedirectToAction("Post", new { username = username, slug = slug });
     }
 
 

@@ -6,6 +6,7 @@ namespace Application.Features.Posts.Queries.GetBySlug;
 
 public class GetBySlugPostResponse : IResponse
 {
+    public Guid Id { get; set; }
     public Guid BlogId { get; set; }
     public string Title { get; set; }
     public string Content { get; set; }

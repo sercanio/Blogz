@@ -1,4 +1,3 @@
-using Application.Features.Authors.Rules;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -15,13 +14,11 @@ public class GetBySlugPostQuery : IRequest<GetBySlugPostResponse>
     {
         private readonly IMapper _mapper;
         private readonly IPostRepository _postRepository;
-        private readonly AuthorBusinessRules _authorBusinessRules;
 
-        public GetBySlugPostQueryHandler(IMapper mapper, AuthorBusinessRules authorBusinessRules, IPostRepository postRepository)
+        public GetBySlugPostQueryHandler(IMapper mapper, IPostRepository postRepository)
         {
             _mapper = mapper;
             _postRepository = postRepository;
-            _authorBusinessRules = authorBusinessRules;
         }
 
         public async Task<GetBySlugPostResponse> Handle(GetBySlugPostQuery request, CancellationToken cancellationToken)

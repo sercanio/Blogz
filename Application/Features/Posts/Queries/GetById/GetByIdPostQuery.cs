@@ -1,4 +1,3 @@
-using Application.Features.Authors.Rules;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -15,13 +14,11 @@ public class GetByIdPostQuery : IRequest<GetByIdPostResponse>
     {
         private readonly IMapper _mapper;
         private readonly IPostRepository _postRepository;
-        private readonly AuthorBusinessRules _authorBusinessRules;
 
-        public GetByIdPostQueryHandler(IMapper mapper, AuthorBusinessRules authorBusinessRules, IPostRepository postRepository)
+        public GetByIdPostQueryHandler(IMapper mapper, IPostRepository postRepository)
         {
             _mapper = mapper;
             _postRepository = postRepository;
-            _authorBusinessRules = authorBusinessRules;
         }
 
         public async Task<GetByIdPostResponse> Handle(GetByIdPostQuery request, CancellationToken cancellationToken)

@@ -1,4 +1,3 @@
-using Application.Features.Authors.Rules;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -15,13 +14,11 @@ public class GetByIdBlogQuery : IRequest<GetByIdBlogResponse>
     {
         private readonly IMapper _mapper;
         private readonly IBlogRepository _blogRepository;
-        private readonly AuthorBusinessRules _authorBusinessRules;
 
-        public GetByIdBlogQueryHandler(IMapper mapper, AuthorBusinessRules authorBusinessRules, IBlogRepository blogRepository)
+        public GetByIdBlogQueryHandler(IMapper mapper, IBlogRepository blogRepository)
         {
             _mapper = mapper;
             _blogRepository = blogRepository;
-            _authorBusinessRules = authorBusinessRules;
         }
 
         public async Task<GetByIdBlogResponse> Handle(GetByIdBlogQuery request, CancellationToken cancellationToken)

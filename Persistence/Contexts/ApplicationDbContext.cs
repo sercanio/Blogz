@@ -37,61 +37,66 @@ namespace BlogZ.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(modelBuilder);
 
-            // Identity table configurations
-            modelBuilder.Entity<IdentityUser>(entity =>
+            modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
             {
-                entity.ToTable("AspNetUsers"); // Change table name if needed
-            });
-
-            modelBuilder.Entity<IdentityRole>(entity =>
-            {
-                entity.ToTable("AspNetRoles"); // Change table name if needed
+                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
             });
 
             modelBuilder.Entity<IdentityUserRole<string>>(entity =>
             {
-                entity.ToTable("AspNetUserRoles"); // Change table name if needed
                 entity.HasKey(e => new { e.UserId, e.RoleId });
-            });
-
-            modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
-            {
-                entity.ToTable("AspNetUserClaims"); // Change table name if needed
-            });
-
-            modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
-            {
-                entity.ToTable("AspNetUserLogins"); // Change table name if needed);
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
             });
 
             modelBuilder.Entity<IdentityUserToken<string>>(entity =>
             {
-                entity.ToTable("AspNetUserTokens"); // Change table name if needed
                 entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
             });
 
-            modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
-            {
-                entity.ToTable("AspNetRoleClaims"); // Change table name if needed
-            });
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             SeedData(modelBuilder);
-
-            base.OnModelCreating(modelBuilder);
         }
 
         private void SeedData(ModelBuilder modelBuilder)
         {
-            var userId = Guid.NewGuid().ToString();
-            var hasher = new PasswordHasher<IdentityUser>();
-
-            // Seed IdentityUser
-            var user = new IdentityUser
+            // Seed Roles
+            var superAdminRoleId = Guid.NewGuid();
+            var moderatorRoleId = Guid.NewGuid();
+            var authorRoleId = Guid.NewGuid();
+            var roles = new List<IdentityRole>
             {
-                Id = userId,
+                new IdentityRole
+                {
+                    Id = superAdminRoleId.ToString(),
+                    Name = "Admin",
+                    NormalizedName= "ADMIN",
+                    ConcurrencyStamp = superAdminRoleId.ToString()
+                },
+                new IdentityRole
+                {
+                    Id = moderatorRoleId.ToString(),
+                    Name = "Moderator",
+                    NormalizedName= "MODERATOR",
+                    ConcurrencyStamp = moderatorRoleId.ToString()
+                },
+                new IdentityRole
+                {
+                    Id = authorRoleId.ToString(),
+                    Name = "Author",
+                    NormalizedName= "AUTHOR",
+                    ConcurrencyStamp = authorRoleId.ToString()
+                }
+            };
+
+            // Seed SuperAdmin user
+            var superAdminId = Guid.NewGuid();
+            var hasher = new PasswordHasher<IdentityUser>();
+            var superAdmin = new IdentityUser
+            {
+                Id = superAdminId.ToString(),
                 UserName = "johndoe",
                 NormalizedUserName = "JOHNDOE",
                 Email = "johndoe@email.com",
@@ -101,12 +106,31 @@ namespace BlogZ.Persistence.Contexts
                 SecurityStamp = string.Empty
             };
 
+            var superAdminRoles = new List<IdentityUserRole<string>>
+            {
+                new IdentityUserRole<string>
+                {
+                    RoleId = superAdminRoleId.ToString(),
+                    UserId = superAdminId.ToString()
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = moderatorRoleId.ToString(),
+                    UserId = superAdminId.ToString()
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = authorRoleId.ToString(),
+                    UserId = superAdminId.ToString()
+                }
+            };
+
             // Seed Author
             var authorId = Guid.NewGuid();
             var author = new Author
             {
                 Id = authorId,
-                UserId = userId,
+                UserId = superAdminId.ToString(),
                 Biography = "This is John Doe's biography.",
                 ProfileImageURL = "https://example.com/profilepicture.jpg"
             };
@@ -189,7 +213,9 @@ namespace BlogZ.Persistence.Contexts
                 }
             };
 
-            modelBuilder.Entity<IdentityUser>().HasData(user);
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
+            modelBuilder.Entity<IdentityUser>().HasData(superAdmin);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(superAdminRoles);
             modelBuilder.Entity<Author>().HasData(author);
             modelBuilder.Entity<Blog>().HasData(blog);
             modelBuilder.Entity<Tag>().HasData(tags);

@@ -75,6 +75,15 @@ app.MapControllerRoute(
     pattern: "posts/{username}/create",
     defaults: new { controller = "Posts", action = "Create" });
 
+app.MapControllerRoute(
+    name: "edit-post",
+    pattern: "posts/{username}/edit",
+    defaults: new { controller = "Posts", action = "Edit" });
+
+app.MapControllerRoute(
+    name: "login",
+    pattern: "account/login",
+    defaults: new { controller = "Account", action = "Login" });
 
 app.MapRazorPages();
 

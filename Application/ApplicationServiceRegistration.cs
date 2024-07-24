@@ -1,14 +1,14 @@
-﻿using Application.Services.Blogs;
+﻿using Application.Services.Authors;
+using Application.Services.Blogs;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NArchitecture.Core.Application.Pipelines.Caching;
 using NArchitecture.Core.Application.Pipelines.Logging;
 using NArchitecture.Core.Application.Pipelines.Transaction;
 using NArchitecture.Core.Application.Pipelines.Validation;
-using NArchitecture.Core.Application.Rules;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Configurations;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Serilog.File;
-using NArchitecture.Core.Localization.Resource.Yaml.DependencyInjection;
 using System.Reflection;
 
 namespace Application;
@@ -31,11 +31,26 @@ public static class ApplicationServiceRegistration
             configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));
         });
 
-        services.AddSubClassesOfType(Assembly.GetExecutingAssembly(), typeof(BaseBusinessRules));
-        services.AddYamlResourceLocalization();
+        //services.AddSubClassesOfType(Assembly.GetExecutingAssembly(), typeof(BaseBusinessRules));
+
         services.AddSingleton<ILogger, SerilogFileLogger>(_ => new SerilogFileLogger(fileLogConfiguration));
 
+        services.AddScoped<IAuthorService, AuthorManager>();
         services.AddScoped<IBlogService, BlogManager>();
+
+        //services.TryAddScoped<IUserValidator<IdentityUser>, UserValidator<IdentityUser>>();
+        //services.TryAddScoped<IPasswordValidator<IdentityUser>, PasswordValidator<IdentityUser>>();
+        //services.TryAddScoped<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
+        //services.TryAddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+        //services.TryAddScoped<IRoleValidator<IdentityRole>, RoleValidator<IdentityRole>>();
+        //// No interface for the error describer so we can add errors without rev'ing the interface
+        //services.TryAddScoped<IdentityErrorDescriber>();
+        //services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<IdentityUser>>();
+        //services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<IdentityUser>>();
+        //services.TryAddScoped<IUserClaimsPrincipalFactory<IdentityUser>, UserClaimsPrincipalFactory<IdentityUser, IdentityRole>>();
+        //services.TryAddScoped<UserManager<IdentityUser>>();
+        //services.TryAddScoped<SignInManager<IdentityUser>>();
+        //services.TryAddScoped<RoleManager<IdentityRole>>();
 
         return services;
     }

@@ -1,7 +1,6 @@
-﻿namespace Blogz.Models
+﻿namespace Blogz.Models;
+
+public class PageNotFoundViewModel
 {
-    public class PageNotFoundViewModel
-    {
-        public string Message { get; set; } = "The requested resource was not found.";
-    }
+    public string Message { get; set; } = "The requested resource was not found.";
 }

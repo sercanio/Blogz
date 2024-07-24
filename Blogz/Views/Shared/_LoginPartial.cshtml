@@ -21,6 +21,10 @@
                     <form class="nav-link form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-page-handler="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button type="submit" class="nav-link btn btn-link">Logout</button>
                     </form>
+                    @* <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-none">
+                        <button type="submit" class="nav-link btn btn-link">Logout</button>
+                    </form> *@
+
                 </li>
             </ul>
         </li>
@@ -28,10 +32,12 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Register") ? "active" : "")" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Register") ? "active" : "")" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Login") ? "active" : "")" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a asp-controller="Account" asp-action="Login">Login</a>
+
+            @* <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Login") ? "active" : "")" asp-area="Identity" asp-page="/Account/Login">Login</a> *@
         </li>
     }
 </ul>
