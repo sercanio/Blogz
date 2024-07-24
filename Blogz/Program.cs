@@ -60,31 +60,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-      name: "blogs",
-      pattern: "blogs/{username}",
-      defaults: new { controller = "Blogs", action = "Blog" });
-
-app.MapControllerRoute(
-    name: "get-post",
-    pattern: "blogs/{username}/post/{slug}",
-    defaults: new { controller = "Posts", action = "Post" });
-
-app.MapControllerRoute(
-    name: "create-post",
-    pattern: "posts/{username}/create",
-    defaults: new { controller = "Posts", action = "Create" });
-
-app.MapControllerRoute(
-    name: "edit-post",
-    pattern: "posts/{username}/edit",
-    defaults: new { controller = "Posts", action = "Edit" });
-
-app.MapControllerRoute(
-    name: "login",
-    pattern: "account/login",
-    defaults: new { controller = "Account", action = "Login" });
-
 app.MapRazorPages();
 
 app.Run();

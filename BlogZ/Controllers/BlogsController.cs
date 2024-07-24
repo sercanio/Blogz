@@ -25,14 +25,7 @@ namespace Blogz.Controllers
             _blogService = blogService;
         }
 
-        public IActionResult Index()
-        {
-            // Get all blogs (replace with specific logic if needed)
-            //var blogs = _blogService.GetAllBlogs();
-
-            return View(); // Pass the list of blogs to the view
-        }
-
+        [HttpGet("blogs/{username}")]
         public async Task<IActionResult> Blog(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -64,10 +57,5 @@ namespace Blogz.Controllers
 
             return View(viewModel);
         }
-
-        // You can add additional actions here for functionalities like:
-        // - Creating new blog posts
-        // - Editing existing blog posts
-        // - Deleting blog posts (if applicable)
     }
 }
