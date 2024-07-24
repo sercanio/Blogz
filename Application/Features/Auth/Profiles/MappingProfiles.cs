@@ -1,3 +1,4 @@
+using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.Register;
 using AutoMapper;
 
@@ -8,5 +9,6 @@ public class MappingProfiles : Profile
     public MappingProfiles()
     {
         CreateMap<RegisterCommand, RegisteredResponse>().ReverseMap();
+        CreateMap<LoginCommand, LoggedResponse>().ReverseMap();
     }
 }

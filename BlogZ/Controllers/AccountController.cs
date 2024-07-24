@@ -1,4 +1,6 @@
-﻿using Application.Features.Auth.Commands.Register;
+﻿using Application.Features.Auth.Commands.Login;
+using Application.Features.Auth.Commands.Logout;
+using Application.Features.Auth.Commands.Register;
 using Blogz.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -10,14 +12,10 @@ namespace Blogz.Controllers;
 public class AccountController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
 
-    public AccountController(IMediator mediator, SignInManager<IdentityUser> signinManager, UserManager<IdentityUser> userManager)
+    public AccountController(IMediator mediator)
     {
         _mediator = mediator;
-        _signInManager = signinManager;
-        _userManager = userManager;
     }
 
     [HttpGet]
@@ -30,12 +28,13 @@ public class AccountController : Controller
 
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        var externalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        // Assume _signInManager.GetExternalAuthenticationSchemesAsync() is handled elsewhere or removed
+        List<AuthenticationScheme>? externalLogins = null;
 
         LoginViewModel model = new LoginViewModel
         {
             ReturnUrl = returnUrl ?? Url.Content("~/"),
-            ExternalLogins = externalLogins
+            ExternalLogins = externalLogins ?? new List<AuthenticationScheme>()
         };
 
         return View(model);
@@ -48,8 +47,6 @@ public class AccountController : Controller
         returnUrl ??= Url.Content("~/");
         model.ReturnUrl = returnUrl;
 
-        model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
         if (model == null)
         {
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -58,23 +55,24 @@ public class AccountController : Controller
 
         if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            LoginCommand command = new()
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return View(model);
-            }
+                Email = model.Email,
+                Password = model.Password,
+                RememberMe = model.RememberMe
+            };
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
+            LoggedResponse response = await _mediator.Send(command);
+
+            if (response.IdentityResult.Succeeded)
             {
                 return LocalRedirect(returnUrl);
             }
-            if (result.RequiresTwoFactor)
+            if (response.IdentityResult.RequiresTwoFactor)
             {
                 return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
             }
-            if (result.IsLockedOut)
+            if (response.IdentityResult.IsLockedOut)
             {
                 return RedirectToAction(nameof(Lockout));
             }
@@ -90,16 +88,23 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(string returnUrl = null)
     {
-        await _signInManager.SignOutAsync();
+        LogoutCommand command = new() { ReturnUrl = returnUrl ?? Url.Content("~/") };
+        LogoutResponse response = await _mediator.Send(command);
+
+        if (response.Succeeded)
+        {
+            return LocalRedirect(response.ReturnUrl);
+        }
+
+        // Handle failure case if necessary
         return RedirectToAction("Index", "Home");
     }
 
     [HttpGet]
     public IActionResult Register(string returnUrl = null)
     {
-        //var externalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         List<AuthenticationScheme>? externalLogins = null;
 
         RegisterViewModel model = new()
@@ -111,10 +116,9 @@ public class AccountController : Controller
         return View(model);
     }
 
-
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl, CancellationToken cancellationToken)
+    public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null, CancellationToken cancellationToken = default)
     {
         RegisterCommand command = new() { Email = model.Email, Password = model.Password, UserName = model.UserName };
 
@@ -122,41 +126,19 @@ public class AccountController : Controller
 
         if (response.IdentityResult.Succeeded)
         {
+            returnUrl ??= Url.Content("~/");
             var loginViewModel = new LoginViewModel()
             {
                 Email = model.Email,
                 Password = model.Password,
-                Succeeded = true
+                ReturnUrl = returnUrl
             };
             return View("Login", loginViewModel);
         }
         model.Errors = response.IdentityResult.Errors;
-
         return View("Register", model);
     }
 
-    private IdentityUser CreateUser()
-    {
-        try
-        {
-            return Activator.CreateInstance<IdentityUser>();
-        }
-        catch
-        {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-        }
-    }
-
-    private IUserEmailStore<IdentityUser> GetEmailStore(IUserStore<IdentityUser> userStore)
-    {
-        if (!_userManager.SupportsUserEmail)
-        {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
-        }
-        return (IUserEmailStore<IdentityUser>)userStore;
-    }
 
     [HttpGet]
     public IActionResult Lockout()

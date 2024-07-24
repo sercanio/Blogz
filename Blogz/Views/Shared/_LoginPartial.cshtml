@@ -3,7 +3,6 @@
 @inject UserManager<IdentityUser> UserManager
 
 <ul>
-
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="dropdown">
@@ -18,13 +17,9 @@
                     <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Manage/Index") ? "active" : "")" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Settings</a>
                 </li>
                 <li>
-                    <form class="nav-link form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-page-handler="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <form class="nav-link form-inline" asp-area="" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button type="submit" class="nav-link btn btn-link">Logout</button>
-                    </form>
-                    @* <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-none">
-                        <button type="submit" class="nav-link btn btn-link">Logout</button>
-                    </form> *@
-
+                    </form>                   
                 </li>
             </ul>
         </li>
@@ -36,8 +31,6 @@
         </li>
         <li class="nav-item">
             <a asp-controller="Account" asp-action="Login">Login</a>
-
-            @* <a class="nav-link @((ViewContext.RouteData.Values["Page"] as string == "/Account/Login") ? "active" : "")" asp-area="Identity" asp-page="/Account/Login">Login</a> *@
         </li>
     }
 </ul>
