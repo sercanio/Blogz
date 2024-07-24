@@ -111,7 +111,7 @@ public class PostsController : BaseController
     }
 
     [HttpGet("posts/{username}/edit/{slug}")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(string username, string slug)
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
