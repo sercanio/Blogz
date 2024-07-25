@@ -8,4 +8,6 @@ public class BlogViewModel
 {
     public GetByIdAuthorResponse Author { get; set; }
     public GetListResponse<GetListByBlogIdPostDto> BlogPosts { get; set; }
+    public string NewBiography { get; set; }
+    public Guid AuthorId { get; set; }
 }

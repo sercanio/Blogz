@@ -4,11 +4,12 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using NArchitecture.Core.Application.Pipelines.Transaction;
 using NArchitecture.Core.Security.Hashing;
 
 namespace Application.Features.Auth.Commands.Register;
 
-public class RegisterCommand : IRequest<RegisteredResponse>
+public class RegisterCommand : IRequest<RegisteredResponse>, ITransactionalRequest
 {
     public required string Email { get; set; }
     public required string Password { get; set; }
@@ -58,7 +59,7 @@ public class RegisterCommand : IRequest<RegisteredResponse>
 
             var author = new Author()
             {
-                Biography = string.Empty,
+                Biography = $"This is {request.UserName}'s biography.",
                 CreatedDate = DateTime.UtcNow,
                 ProfileImageURL = string.Empty,
                 UserId = createdUser.Id,

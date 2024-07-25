@@ -568,14 +568,14 @@ h6 {
     .footer .footer-subscribe .form-control {
         font-size: 14px;
         height: 42px;
-        border: 2px solid color-mix(in srgb, var(--default-color), transparent 40%);
+        border: 2px solid color-mix(in srgb, var(--accent-color), transparent 40%);
         background: none;
         color: var(--heading-color);
         padding-right: 40px;
     }
 
         .footer .footer-subscribe .form-control:focus {
-            border-color: color-mix(in srgb, var(--default-color), transparent 10%);
+            border-color: color-mix(in srgb, var(--accent-color), transparent 10%);
             box-shadow: none;
         }
 

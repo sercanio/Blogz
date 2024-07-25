@@ -1,4 +1,5 @@
-﻿using Application.Features.Authors.Queries.GetById;
+﻿using Application.Features.Authors.Commands.Update;
+using Application.Features.Authors.Queries.GetById;
 using Application.Features.Authors.Queries.GetByUserId;
 using Application.Features.Posts.Queries.GetListByAuthorId;
 using Application.Services.Blogs;
@@ -58,5 +59,31 @@ namespace Blogz.Controllers
 
             return View(viewModel);
         }
+
+        [HttpPost("blogs/{username}/UpdateBiography")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateBiography(string username, UpdateAuthorCommand model)
+        {
+            if (ModelState.IsValid)
+            {
+                UpdateAuthorCommand command = new()
+                {
+                    Id = model.Id,
+                    Biography = model.Biography
+                };
+
+                var response = await _mediator.Send(command);
+
+                if (response != null)
+                {
+                    return RedirectToAction("Blog", "Blogs", new { username });
+                }
+
+                ModelState.AddModelError(string.Empty, "Failed to update biography.");
+            }
+
+            return RedirectToAction("Blog", "Blogs", new { username });
+        }
+
     }
 }
