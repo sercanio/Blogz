@@ -2,18 +2,17 @@
 using Blogz.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebUI.ViewComponents
-{
-    public class UpdateAuthorBiography : ViewComponent
-    {
-        public IViewComponentResult Invoke(GetByIdAuthorResponse author)
-        {
-            UpdateAuthorBiographyViewModel viewModel = new()
-            {
-                Author = author,
-            };
+namespace WebUI.ViewComponents;
 
-            return View(viewModel);
-        }
+public class UpdateAuthorBiography : ViewComponent
+{
+    public IViewComponentResult Invoke(GetByIdAuthorResponse author)
+    {
+        UpdateAuthorBiographyViewModel viewModel = new()
+        {
+            Author = author,
+        };
+
+        return View(viewModel);
     }
 }

@@ -8,5 +8,6 @@ namespace Blogz.Models
         public string Content { get; set; }
         public bool IsPublic { get; set; }
         public GetByIdAuthorResponse Author { get; set; }
+        public BlogViewModel Blog { get; set; }
     }
 }

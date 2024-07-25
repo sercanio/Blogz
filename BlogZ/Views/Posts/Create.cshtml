@@ -1,4 +1,4 @@
-﻿@model Blogz.Models.CreatePostViewModel
+﻿@model CreatePostViewModel
 
 @{
     ViewData["Title"] = "Create New Post";
@@ -6,7 +6,10 @@
 
 <h1>Create New Post</h1>
 
-<partial name="_BlogHeaderPartial" />
+@if (Model.Blog != null)
+{
+    <partial name="_BlogHeaderPartial" model="Model.Blog" />
+}
 
 <form asp-action="Create" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
     <div class="form-group d-flex gap-2 align-items-center">

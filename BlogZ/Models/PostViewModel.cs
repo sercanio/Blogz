@@ -7,4 +7,6 @@ public class PostViewModel
 {
     public GetBySlugPostResponse Post { get; set; }
     public GetByIdAuthorResponse Author { get; set; }
+    public BlogViewModel Blog { get; set; }
+
 }

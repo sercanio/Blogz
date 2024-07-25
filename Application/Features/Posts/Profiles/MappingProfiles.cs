@@ -26,5 +26,8 @@ public class MappingProfiles : Profile
 
         CreateMap<Post, GetListByBlogIdPostDto>();
         CreateMap<IPaginate<Post>, GetListResponse<GetListByBlogIdPostDto>>();
+
+        CreateMap<Post, GetListPostDto>();
+        CreateMap<IPaginate<Post>, GetListResponse<GetListPostDto>>();
     }
 }

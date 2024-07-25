@@ -39,9 +39,19 @@ namespace Blogz.Controllers
 
             if (User.Identity.Name != username) return Forbid();
 
-            var viewModel = new CreatePostViewModel { Author = author };
+            var viewModel = new CreatePostViewModel
+            {
+                Title = "",
+                Content = "",
+                IsPublic = false,
+                Blog = new BlogViewModel
+                {
+                    Author = author
+                }
+            };
             return View(viewModel);
         }
+
 
         [HttpPost("posts/{username}/create")]
         [Authorize]
@@ -51,7 +61,7 @@ namespace Blogz.Controllers
             if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
             if (User.Identity.Name != username) return Forbid();
 
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return View(model); // Ensure model is correctly passed to view
 
             IdentityUser? user = await _userManager.FindByNameAsync(username);
             if (user == null) return NotFound();
@@ -72,8 +82,8 @@ namespace Blogz.Controllers
             return RedirectToAction("Post", new { username, slug = result.Slug });
         }
 
+
         [HttpGet("posts/{username}/edit/{slug}")]
-        [Authorize(Roles = "Author, Moderator, Admin")]
         public async Task<IActionResult> Edit(string username, string slug)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
@@ -81,8 +91,9 @@ namespace Blogz.Controllers
                 return BadRequest("Username or slug cannot be null or empty");
             }
 
-            // Ensure the authenticated user is the author
-            if (User.Identity.Name != username)
+            // Ensure the authenticated user is the author or in the correct role
+            var currentUserName = User.Identity.Name;
+            if (currentUserName != username && !User.IsInRole("Moderator") && !User.IsInRole("Admin"))
             {
                 return Forbid();
             }
@@ -112,13 +123,18 @@ namespace Blogz.Controllers
                 Slug = post.Slug,
                 IsPublic = post.IsPublic,
                 Author = author,
+                Blog = new BlogViewModel()
+                {
+                    Author = author
+                }
             };
 
             return View(viewModel);
         }
 
+
         [HttpPost("posts/{username}/edit/{slug}")]
-        [Authorize(Roles = "Author, Moderator, Admin")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string username, string slug, UpdatePostCommand model)
         {
@@ -159,7 +175,7 @@ namespace Blogz.Controllers
         }
 
         [HttpDelete("posts/delete/{slug}")]
-        [Authorize(Roles = "Author, Moderator, Admin")]
+        [Authorize]
         public async Task<IActionResult> Delete(string slug)
         {
             // Ensure the user is authenticated
@@ -213,7 +229,15 @@ namespace Blogz.Controllers
             var author = post.Blog?.Author;
             if (author == null) return NotFound();
 
-            var viewModel = new PostViewModel { Post = post, Author = author };
+            var viewModel = new PostViewModel
+            {
+                Post = post,
+                Author = author,
+                Blog = new BlogViewModel
+                {
+                    Author = author
+                }
+            };
             return View(viewModel);
         }
     }

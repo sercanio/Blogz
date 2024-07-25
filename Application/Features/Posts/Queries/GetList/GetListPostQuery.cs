@@ -8,32 +8,30 @@ using Persistence.Repositories.Abstractions;
 
 namespace Application.Features.Posts.Queries.GetListByAuthorId;
 
-public class GetListByBlogIdPostQuery : IRequest<GetListResponse<GetListByBlogIdPostDto>>
+public class GetListPostQuery : IRequest<GetListResponse<GetListPostDto>>
 {
     public PageRequest PageRequest { get; set; }
-    public Guid BlogId { get; set; }
 
-    public class GetListAuthorQueryHandler : IRequestHandler<GetListByBlogIdPostQuery, GetListResponse<GetListByBlogIdPostDto>>
+    public class GetListQueryHandler : IRequestHandler<GetListPostQuery, GetListResponse<GetListPostDto>>
     {
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
 
-        public GetListAuthorQueryHandler(IPostRepository postRepository, IMapper mapper)
+        public GetListQueryHandler(IPostRepository postRepository, IMapper mapper)
         {
             _postRepository = postRepository;
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetListByBlogIdPostDto>> Handle(GetListByBlogIdPostQuery request, CancellationToken cancellationToken)
+        public async Task<GetListResponse<GetListPostDto>> Handle(GetListPostQuery request, CancellationToken cancellationToken)
         {
             IPaginate<Post> posts = await _postRepository.GetListAsync(
-                predicate: p => p.BlogId == request.BlogId,
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken
             );
 
-            GetListResponse<GetListByBlogIdPostDto> response = _mapper.Map<GetListResponse<GetListByBlogIdPostDto>>(posts);
+            GetListResponse<GetListPostDto> response = _mapper.Map<GetListResponse<GetListPostDto>>(posts);
             return response;
         }
     }

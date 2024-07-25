@@ -9,4 +9,6 @@ public class EditPostViewModel
     public string Slug { get; set; }
     public bool IsPublic { get; set; }
     public GetByIdAuthorResponse Author { get; set; }
+    public BlogViewModel Blog { get; set; }
+
 }

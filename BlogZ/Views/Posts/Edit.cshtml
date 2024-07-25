@@ -6,7 +6,7 @@
 
 <h1>Edit Post</h1>
 
-<partial name="_BlogHeaderPartial" />
+<partial name="_BlogHeaderPartial" model="Model.Blog" />
 
 <form asp-area="" asp-controller="Posts" asp-action="Edit" asp-route-username="@Model.Author.User.UserName" asp-route-slug="@Model.Slug" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
     <input type="hidden" asp-for="Author.Id" />

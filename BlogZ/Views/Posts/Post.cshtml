@@ -1,10 +1,10 @@
-﻿@model Blogz.Models.PostViewModel
+﻿@model PostViewModel
 
 @{
     ViewData["Title"] = Model.Post?.Title ?? "Post";
 }
 
-<partial name="_BlogHeaderPartial" />
+<partial name="_BlogHeaderPartial" model="Model.Blog" />
 
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -39,9 +39,16 @@
                 </p>
                 @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Author.User.UserName)
                 {
-                    <div class="d-flex justify-content-start align-items-center gap-2">
-                        <a href="@Url.Action("Edit", "Posts", new { username = Model.Author.User.UserName, slug = Model.Post.Slug })" class="ml-auto">Edit Post</a>
-                    </div>
+                    @if (User.Identity.IsAuthenticated &&
+                   (User.Identity.Name == Model.Author.User.UserName ||
+                   User.IsInRole("Moderator") ||
+                   User.IsInRole("Admin")))
+                    {
+                        <div class="d-flex justify-content-start align-items-center gap-2">
+                            <a href="@Url.Action("Edit", "Posts", new { username = Model.Author.User.UserName, slug = Model.Post.Slug })" class="ml-auto">Edit Post</a>
+                        </div>
+                    }
+
                 }
                 <!-- Divider -->
                 <hr class="my-4" />
