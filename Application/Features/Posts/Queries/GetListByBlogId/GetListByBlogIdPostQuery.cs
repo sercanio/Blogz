@@ -11,7 +11,7 @@ namespace Application.Features.Posts.Queries.GetListByAuthorId;
 public class GetListByBlogIdPostQuery : IRequest<GetListResponse<GetListByBlogIdPostDto>>
 {
     public PageRequest PageRequest { get; set; }
-
+    public Guid BlogId { get; set; }
     //public string[] Roles => [Admin, Read];
 
     public class GetListAuthorQueryHandler : IRequestHandler<GetListByBlogIdPostQuery, GetListResponse<GetListByBlogIdPostDto>>
@@ -28,6 +28,7 @@ public class GetListByBlogIdPostQuery : IRequest<GetListResponse<GetListByBlogId
         public async Task<GetListResponse<GetListByBlogIdPostDto>> Handle(GetListByBlogIdPostQuery request, CancellationToken cancellationToken)
         {
             IPaginate<Post> posts = await _postRepository.GetListAsync(
+                predicate: p => p.BlogId == request.BlogId,
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
                 cancellationToken: cancellationToken

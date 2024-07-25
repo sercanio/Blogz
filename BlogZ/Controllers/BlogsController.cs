@@ -40,6 +40,7 @@ namespace Blogz.Controllers
 
             GetListByBlogIdPostQuery blogPostsQuery = new()
             {
+                BlogId = author.Blog.Id,
                 PageRequest = new PageRequest()
                 {
                     PageIndex = 0,
