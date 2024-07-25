@@ -2,6 +2,7 @@
 using Application.Features.Authors.Queries.GetByUserId;
 using Application.Features.Entries.Commands.Update;
 using Application.Features.Posts.Commands.Create;
+using Application.Features.Posts.Commands.Delete;
 using Application.Features.Posts.Queries.GetBySlug;
 using Blogz.Models;
 using MediatR;
@@ -10,229 +11,210 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Controllers;
 
-namespace Blogz.Controllers;
-
-public class PostsController : BaseController
+namespace Blogz.Controllers
 {
-    private readonly IMediator _mediator;
-    private readonly UserManager<IdentityUser> _userManager;
-
-    public PostsController(IMediator mediator, UserManager<IdentityUser> userManager)
+    public class PostsController : BaseController
     {
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _userManager = userManager;
-    }
+        private readonly IMediator _mediator;
+        private readonly UserManager<IdentityUser> _userManager;
 
-    [HttpGet("posts/{username}/create")]
-    [Authorize]
-    public async Task<IActionResult> Create(string username)
-    {
-        if (string.IsNullOrEmpty(username))
+        public PostsController(IMediator mediator, UserManager<IdentityUser> userManager)
         {
-            return BadRequest("Username cannot be null or empty");
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _userManager = userManager;
         }
 
-        IdentityUser? user = await _userManager.FindByNameAsync(username);
-        if (user == null)
+        [HttpGet("posts/{username}/create")]
+        [Authorize]
+        public async Task<IActionResult> Create(string username)
         {
-            return NotFound();
+            if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
+
+            IdentityUser? user = await _userManager.FindByNameAsync(username);
+            if (user == null) return NotFound();
+
+            var authorQuery = new GetByUserIdAuthorQuery { UserId = user.Id };
+            var author = await _mediator.Send(authorQuery);
+            if (author == null) return NotFound("Author not found");
+
+            if (User.Identity.Name != username) return Forbid();
+
+            var viewModel = new CreatePostViewModel { Author = author };
+            return View(viewModel);
         }
 
-        GetByUserIdAuthorQuery authorQuery = new() { UserId = user.Id };
-        GetByIdAuthorResponse? author = await _mediator.Send(authorQuery);
-
-        if (author == null)
+        [HttpPost("posts/{username}/create")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string username, CreatePostCommand model)
         {
-            return NotFound("Author not found");
+            if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
+            if (User.Identity.Name != username) return Forbid();
+
+            if (!ModelState.IsValid) return View(model);
+
+            IdentityUser? user = await _userManager.FindByNameAsync(username);
+            if (user == null) return NotFound();
+
+            var authorQuery = new GetByUserIdAuthorQuery { UserId = user.Id };
+            var author = await _mediator.Send(authorQuery);
+            if (author == null) return NotFound("Author not found");
+
+            var command = new CreatePostCommand
+            {
+                Title = model.Title,
+                Content = model.Content,
+                BlogId = author.Blog.Id,
+                IsPublic = model.IsPublic
+            };
+
+            var result = await _mediator.Send(command);
+            return RedirectToAction("Post", new { username, slug = result.Slug });
         }
 
-        // Ensure the authenticated user is the author
-        if (User.Identity.Name != username)
+        [HttpGet("posts/{username}/edit/{slug}")]
+        [Authorize(Roles = "Author, Moderator, Admin")]
+        public async Task<IActionResult> Edit(string username, string slug)
         {
-            return Forbid();
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
+            {
+                return BadRequest("Username or slug cannot be null or empty");
+            }
+
+            // Ensure the authenticated user is the author
+            if (User.Identity.Name != username)
+            {
+                return Forbid();
+            }
+
+            // Get the post by slug
+            GetBySlugPostQuery postQuery = new() { Slug = slug };
+            GetBySlugPostResponse? post = await _mediator.Send(postQuery);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            // Assuming the post object has an Author property
+            GetByIdAuthorResponse? author = post.Blog?.Author;
+
+            if (author == null)
+            {
+                return NotFound();
+            }
+
+            // Create a view model and pass it to the view
+            EditPostViewModel viewModel = new()
+            {
+                Title = post.Title,
+                Content = post.Content,
+                Slug = post.Slug,
+                IsPublic = post.IsPublic,
+                Author = author,
+            };
+
+            return View(viewModel);
         }
 
-        CreatePostViewModel viewModel = new()
+        [HttpPost("posts/{username}/edit/{slug}")]
+        [Authorize(Roles = "Author, Moderator, Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string username, string slug, UpdatePostCommand model)
         {
-            Author = author
-        };
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
+            {
+                return BadRequest("Username or slug cannot be null or empty");
+            }
 
+            if (User.Identity.Name != username)
+            {
+                return Forbid();
+            }
 
-        return View(viewModel);
-    }
+            GetBySlugPostQuery postQuery = new() { Slug = slug };
+            GetBySlugPostResponse? post = await _mediator.Send(postQuery);
 
-    [HttpPost("posts/{username}/create")]
-    [Authorize]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string username, CreatePostCommand model)
-    {
-        if (string.IsNullOrEmpty(username))
-        {
-            return BadRequest("Username cannot be null or empty");
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            UpdatePostCommand command = new()
+            {
+                Id = post.Id,
+                Title = model.Title,
+                Content = model.Content,
+                IsPublic = model.IsPublic,
+            };
+
+            await _mediator.Send(command);
+
+            return RedirectToAction("Post", new { username, slug });
         }
 
-        // Ensure the authenticated user is the author
-        if (User.Identity.Name != username)
+        [HttpDelete("posts/delete/{slug}")]
+        [Authorize(Roles = "Author, Moderator, Admin")]
+        public async Task<IActionResult> Delete(string slug)
         {
-            return Forbid();
+            // Ensure the user is authenticated
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return Forbid();
+            }
+
+            // Get the post by slug to find its ID and author
+            GetBySlugPostQuery postQuery = new() { Slug = slug };
+            GetBySlugPostResponse? post = await _mediator.Send(postQuery);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the user is authorized to delete the post
+            if (User.Identity.Name != post.Blog?.Author?.User?.UserName &&
+                !User.IsInRole("Moderator") &&
+                !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
+            // Create delete command
+            var deleteCommand = new DeletePostCommand { Id = post.Id };
+            var result = await _mediator.Send(deleteCommand);
+
+            if (result.Success)
+            {
+                // Redirect to the user's blog page after successful deletion
+                return RedirectToAction("Blog", "Blogs", new { username = post.Blog?.Author?.User?.UserName });
+            }
+
+            // If deletion fails, redirect to an error page or the post's details page
+            return RedirectToAction("Error", "Home", new { message = result.Message });
         }
 
-        if (!ModelState.IsValid)
+
+        [HttpGet("blogs/{username}/post/{slug}")]
+        public async Task<IActionResult> Post(string username, string slug)
         {
-            return View(model);
+            if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
+            if (string.IsNullOrEmpty(slug)) return BadRequest("Slug cannot be null or empty");
+
+            var postQuery = new GetBySlugPostQuery { Slug = slug };
+            var post = await _mediator.Send(postQuery);
+            if (post == null) return NotFound();
+
+            var author = post.Blog?.Author;
+            if (author == null) return NotFound();
+
+            var viewModel = new PostViewModel { Post = post, Author = author };
+            return View(viewModel);
         }
-
-        IdentityUser? user = await _userManager.FindByNameAsync(username);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        GetByUserIdAuthorQuery authorQuery = new() { UserId = user.Id };
-        GetByIdAuthorResponse? author = await _mediator.Send(authorQuery);
-
-        if (author == null)
-        {
-            return NotFound("Author not found");
-        }
-
-        // Create a new post command
-        CreatePostCommand command = new()
-        {
-            Title = model.Title,
-            Content = model.Content,
-            BlogId = author.Blog.Id,
-            IsPublic = model.IsPublic
-        };
-
-        CreatedPostResponse? result = await _mediator.Send(command);
-
-        return RedirectToAction("Post", new { username = username, slug = result.Slug });
-    }
-
-    [HttpGet("posts/{username}/edit/{slug}")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Edit(string username, string slug)
-    {
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
-        {
-            return BadRequest("Username or slug cannot be null or empty");
-        }
-
-        // Ensure the authenticated user is the author
-        if (User.Identity.Name != username)
-        {
-            return Forbid();
-        }
-
-        // Get the post by slug
-        GetBySlugPostQuery postQuery = new() { Slug = slug };
-        GetBySlugPostResponse? post = await _mediator.Send(postQuery);
-
-        if (post == null)
-        {
-            return NotFound();
-        }
-
-        // Assuming the post object has an Author property
-        GetByIdAuthorResponse? author = post.Blog?.Author;
-
-        if (author == null)
-        {
-            return NotFound();
-        }
-
-        // Create a view model and pass it to the view
-        CreatePostViewModel viewModel = new()
-        {
-            Author = author
-        };
-
-        return View(viewModel);
-    }
-
-    [HttpPost("posts/{username}/edit/{slug}")]
-    [Authorize]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(string username, string slug, CreatePostViewModel model)
-    {
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(slug))
-        {
-            return BadRequest("Username or slug cannot be null or empty");
-        }
-
-        // Ensure the authenticated user is the author
-        if (User.Identity.Name != username)
-        {
-            return Forbid();
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        // Get the post by slug
-        GetBySlugPostQuery postQuery = new() { Slug = slug };
-        GetBySlugPostResponse? post = await _mediator.Send(postQuery);
-
-        if (post == null)
-        {
-            return NotFound();
-        }
-
-        // Create an update command
-        UpdatePostCommand command = new()
-        {
-            Id = post.Id, // Ensure you have the post ID for updating
-            Title = model.Title,
-            Content = model.Content
-        };
-
-        await _mediator.Send(command);
-
-        return RedirectToAction("Post", new { username = username, slug = slug });
-    }
-
-
-    [HttpGet("blogs/{username}/post/{slug}")]
-    public async Task<IActionResult> Post(string username, string slug)
-    {
-
-        if (string.IsNullOrEmpty(username))
-        {
-            return BadRequest("Username cannot be null or empty");
-        }
-
-        if (string.IsNullOrEmpty(slug))
-        {
-            return BadRequest("Slug cannot be null or empty");
-        }
-
-        // Get the post by slug
-        GetBySlugPostQuery postQuery = new() { Slug = slug };
-        GetBySlugPostResponse? post = await _mediator.Send(postQuery);
-
-        if (post == null)
-        {
-            return NotFound();
-        }
-
-        // Assuming the post object has an Author property
-        GetByIdAuthorResponse? author = post.Blog?.Author;
-
-        if (author == null)
-        {
-            return NotFound();
-        }
-
-        // Create a view model and pass it to the view
-        PostViewModel viewModel = new()
-        {
-            Post = post,
-            Author = author
-        };
-
-        return View(viewModel);
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Blogz.Models.CreatePostViewModel
+﻿@model Blogz.Models.EditPostViewModel
 
 @{
     ViewData["Title"] = "Edit Post";
@@ -8,7 +8,8 @@
 
 <partial name="_BlogHeaderPartial" />
 
-<form asp-action="Edit" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
+<form asp-area="" asp-controller="Posts" asp-action="Edit" asp-route-username="@Model.Author.User.UserName" asp-route-slug="@Model.Slug" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
+    <input type="hidden" asp-for="Author.Id" />
     <div class="form-group d-flex gap-2 align-items-center">
         <div class="flex-fill">
             <label asp-for="Title" class="control-label"></label>
@@ -26,17 +27,15 @@
     <div class="form-group mt-2">
         <label asp-for="Content" class="control-label"></label>
         <span asp-validation-for="Content" class="text-danger"></span>
-        <textarea asp-for="Content" class="form-control">
-            @Model.Content
-        </textarea>
+        <textarea asp-for="Content" class="form-control">@Model.Content</textarea>
     </div>
     <div class="form-group mt-3">
         <input type="submit" value="Update" class="btn btn-new-post" />
     </div>
 </form>
 
+
 @section Scripts {
-    <!-- Place the first <script> tag in your HTML's <head> -->
     <script src="https://cdn.tiny.cloud/1/dmjmi2i6ow7orwe5hnliu17c9jgmzwy5gdjb59qctogrnve6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
