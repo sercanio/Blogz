@@ -52,11 +52,10 @@ namespace Blogz.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost("posts/{username}/create")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string username, CreatePostCommand model)
+        public async Task<IActionResult> Create(string username, CreatePostCommand model, IFormFile coverImage)
         {
             if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
             if (User.Identity.Name != username) return Forbid();
@@ -75,13 +74,13 @@ namespace Blogz.Controllers
                 Title = model.Title,
                 Content = model.Content,
                 BlogId = author.Blog.Id,
-                IsPublic = model.IsPublic
+                IsPublic = model.IsPublic,
+                CoverImage = coverImage
             };
 
             var result = await _mediator.Send(command);
             return RedirectToAction("Post", new { username, slug = result.Slug });
         }
-
 
         [HttpGet("posts/{username}/edit/{slug}")]
         public async Task<IActionResult> Edit(string username, string slug)

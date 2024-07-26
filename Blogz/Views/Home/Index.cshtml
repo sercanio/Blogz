@@ -79,26 +79,27 @@
     </div>
     <!-- End Section Title -->
     <div class="container">
-        <div class="row gy-4">
+        <div class="row gy-5">
             @foreach (var post in Model.Items)
             {
                 <div class="col-md-6 col-lg-4">
                     <div class="post-entry" data-aos="fade-up" data-aos-delay="100">
-                        <a href="@Url.Action("Post", "Posts", new { slug = post.Slug })" class="thumb d-block">
-                            <img src="assets/img/img_h_4.jpg" alt="Image" class="img-fluid rounded">
+                        <a href="@Url.Action("Post", "Posts", new { username = post?.Blog?.Author?.User?.UserName, slug = post.Slug })" class="thumb d-block">
+                            <img src="@post.CoverImageURL" alt="Image" class="img-fluid rounded">
                         </a>
                         <div class="post-content">
                             <div class="meta">
                                 <span class="date">@post.CreatedDate.ToString("MMMM dd, yyyy")</span>
                             </div>
-                            <h3><a href="@Url.Action("Post", "Posts", new { slug = post.Slug })">@post.Title</a></h3>
+                            <h3><a href="@Url.Action("Post", "Posts", new { username = post?.Blog?.Author?.User?.UserName, slug = post.Slug })">@post.Title</a></h3>
                             <div class="d-flex author align-items-center">
                                 <div class="pic">
-                                    <img src="assets/img/team/team-3.jpg" alt="Image" class="img-fluid rounded-circle">
+                                    <img src="https://picsum.photos/100/100" alt="Author's profile picture" class="img-fluid rounded-circle">
                                 </div>
                                 <div class="author-name">
-                                    <strong class="d-block">Winston Gold</strong>
-                                    <span class="">Lead Product Designer</span>
+                                    <a href="@Url.Action("Blog", "Blogs", new { username = post?.Blog?.Author?.User?.UserName, slug = post.Slug })" class="d-block">
+                                        <strong class="d-block">@post.Blog.Author.User.UserName</strong>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -115,13 +116,14 @@
                     <li class="page-item">
                         <a class="page-link" href="@Url.Action("Index", new { pageIndex = Model.Index - 1, pageSize = Model.Size })" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
                         </a>
                     </li>
                 }
                 @for (int i = 0; i < Model.Pages; i++)
                 {
                     <li class="page-item @(i == Model.Index ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { pageIndex = i, pageSize = Model.Size })">@i + 1</a>
+                        <a class="page-link" href="@Url.Action("Index", new { pageIndex = i, pageSize = Model.Size })">@((i + 1).ToString())</a>
                     </li>
                 }
                 @if (Model.HasNext)
@@ -129,6 +131,7 @@
                     <li class="page-item">
                         <a class="page-link" href="@Url.Action("Index", new { pageIndex = Model.Index + 1, pageSize = Model.Size })" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
                         </a>
                     </li>
                 }

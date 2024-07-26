@@ -20,8 +20,9 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.DeletedDate).HasColumnName("DeletedDate");
 
         builder.HasOne(p => p.Blog)
-            .WithMany(b => b.Posts)
-            .HasForeignKey(p => p.BlogId);
+               .WithMany(b => b.Posts)
+               .HasForeignKey(p => p.BlogId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasQueryFilter(p => !p.DeletedDate.HasValue);
     }

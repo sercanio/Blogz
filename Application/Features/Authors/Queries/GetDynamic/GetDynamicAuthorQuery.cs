@@ -1,18 +1,17 @@
-﻿using Application.Features.Authors.Queries.GetDynamic;
-using AutoMapper;
+﻿using AutoMapper;
+using Domain.Entities;
 using MediatR;
 using NArchitecture.Core.Application.Requests;
-using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Dynamic;
 using Persistence.Repositories.Abstractions;
 
 namespace Application.Features.Titles.Queries.GetDynamic;
-public class GetDynamicAuthorQuery : IRequest<GetListResponse<GetDynamicAuthorItemDto>>
+public class GetDynamicAuthorQuery : IRequest<List<Author>>
 {
     public PageRequest PageRequest { get; set; }
     public DynamicQuery DynamicQuery { get; set; }
 
-    public class GetDynamicAuthorQueryHandler : IRequestHandler<GetDynamicAuthorQuery, GetListResponse<GetDynamicAuthorItemDto>>
+    public class GetDynamicAuthorQueryHandler : IRequestHandler<GetDynamicAuthorQuery, List<Author>>
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
@@ -23,11 +22,11 @@ public class GetDynamicAuthorQuery : IRequest<GetListResponse<GetDynamicAuthorIt
             _mapper = mapper;
         }
 
-        public async Task<GetListResponse<GetDynamicAuthorItemDto>> Handle(GetDynamicAuthorQuery request, CancellationToken cancellationToken)
+        public async Task<List<Author>> Handle(GetDynamicAuthorQuery request, CancellationToken cancellationToken)
         {
-            var titles = await _authorRepository.GetListByDynamicAsync(request.DynamicQuery, index: request.PageRequest.PageIndex, size: request.PageRequest.PageSize);
+            var authors = await _authorRepository.GetListByDynamicAsync(request.DynamicQuery, index: request.PageRequest.PageIndex, size: request.PageRequest.PageSize);
 
-            var response = _mapper.Map<GetListResponse<GetDynamicAuthorItemDto>>(titles);
+            var response = _mapper.Map<List<Author>>(authors);
 
             return response;
         }

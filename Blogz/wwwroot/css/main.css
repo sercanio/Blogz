@@ -975,6 +975,9 @@ section,
 }
 
     .blog-posts .post-entry .thumb img {
+        width: 100%; /* Adjust as needed */
+        height: 200px; /* Adjust as needed */
+        object-fit: cover;
         transition: var(--card-image-transition);
     }
 
@@ -2278,6 +2281,35 @@ section,
 }
 
 /*--------------------------------------------------------------
+# Paginations
+--------------------------------------------------------------*/
+.pagination {
+    --bs-pagination-padding-x: 0.75rem;
+    --bs-pagination-padding-y: 0.375rem;
+    --bs-pagination-font-size: 1rem;
+    --bs-pagination-color: var(--accent-color);
+    --bs-pagination-bg: var(--bs-body-bg);
+    --bs-pagination-border-width: var(--bs-border-width);
+    --bs-pagination-border-color: var(--accent-color);
+    --bs-pagination-border-radius: var(--bs-border-radius);
+    --bs-pagination-hover-color: var(--default-color);
+    --bs-pagination-hover-bg: var(--accent-color);
+    --bs-pagination-hover-border-color: var(--accent-color);
+    --bs-pagination-focus-color: var(--default-color);
+    --bs-pagination-focus-bg: var(--accent-color);
+    --bs-pagination-focus-box-shadowbs-pagination-focus-box-shadow: 0 0 0 0 var(--accent-color);
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-active-bg: var(--accent-color);
+    --bs-pagination-active-border-color: var(--accent-color);
+    --bs-pagination-disabled-color: var(--bs-secondary-color);
+    --bs-pagination-disabled-bg: var(--bs-secondary-bg);
+    --bs-pagination-disabled-border-color: var(--bs-border-color);
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+}
+
+/*--------------------------------------------------------------
 # Checkboxes
 --------------------------------------------------------------*/
 
@@ -2470,4 +2502,11 @@ section,
 
 .theme-switch-widget {
     cursor: pointer;
+}
+
+.searchbar-container{
+    margin: 0;
+    padding: 0;
+    position: relative;
+    max-width: 20rem;
 }

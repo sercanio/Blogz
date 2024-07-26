@@ -1,6 +1,6 @@
 ﻿using Application.Features.Blogs.Queries.GetById;
 using Application.Features.Blogs.Queries.GetList;
-using Application.Features.Posts.Queries.GetListByAuthorId;
+using Application.Features.Posts.Queries.GetListByBlogId;
 using AutoMapper;
 using Domain.Entities;
 using NArchitecture.Core.Application.Responses;

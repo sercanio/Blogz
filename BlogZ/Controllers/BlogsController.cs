@@ -1,7 +1,7 @@
 ﻿using Application.Features.Authors.Commands.Update;
 using Application.Features.Authors.Queries.GetById;
 using Application.Features.Authors.Queries.GetByUserId;
-using Application.Features.Posts.Queries.GetListByAuthorId;
+using Application.Features.Posts.Queries.GetListByBlogId;
 using Application.Services.Blogs;
 using Blogz.Models;
 using MediatR;

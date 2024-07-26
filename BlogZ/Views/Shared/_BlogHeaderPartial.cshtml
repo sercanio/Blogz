@@ -26,13 +26,6 @@
                 @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Author.User.UserName)
                 {
                     <i class="bi bi-pencil-square" style="cursor: pointer;" onclick="showBiographyEditor()"></i>
-                  @*   <div id="biography-editor" class="biography-editor" style="display: none;">
-                        <form asp-controller="Blogs" asp-action="UpdateBiography" asp-route-username="@Model.Author.User.UserName" method="post">
-                            <textarea asp-for="NewBiography" class="form-control" rows="3"></textarea>
-                            <input type="hidden" asp-for="Author.Id" />
-                            <button type="submit" class="btn btn-new-post mt-2">Save</button>
-                        </form>
-                    </div> *@
                     @await Component.InvokeAsync("UpdateAuthorBiography", new { author = Model.Author })
                 }
             </div>

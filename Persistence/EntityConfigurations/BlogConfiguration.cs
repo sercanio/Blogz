@@ -19,8 +19,9 @@ public class BlogConfiguration : IEntityTypeConfiguration<Blog>
         builder.HasIndex(b => b.AuthorId).IsUnique();
 
         builder.HasOne(b => b.Author)
-            .WithOne(a => a.Blog)
-            .HasForeignKey<Blog>(b => b.AuthorId);
+               .WithOne(a => a.Blog)
+               .HasForeignKey<Blog>(b => b.AuthorId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasQueryFilter(b => !b.DeletedDate.HasValue);
     }

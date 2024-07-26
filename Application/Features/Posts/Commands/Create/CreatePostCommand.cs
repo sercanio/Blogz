@@ -1,7 +1,9 @@
 using Application.Services.Blogs;
+using Application.Services.ImageService;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using NArchitecture.Core.Application.Pipelines.Logging;
 using NArchitecture.Core.Application.Pipelines.Transaction;
 using Persistence.Repositories.Abstractions;
@@ -16,7 +18,7 @@ public class CreatePostCommand : IRequest<CreatedPostResponse>, ILoggableRequest
     public string Content { get; set; }
     public string? Slug { get; set; }
     public bool IsPublic { get; set; } = true;
-    public string CoverImageURL { get; set; } = string.Empty;
+    public IFormFile? CoverImage { get; set; }
 
 
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, CreatedPostResponse>
@@ -24,19 +26,25 @@ public class CreatePostCommand : IRequest<CreatedPostResponse>, ILoggableRequest
         private readonly IMapper _mapper;
         private readonly IPostRepository _postRepository;
         private readonly IBlogService _blogService;
+        private readonly ImageServiceBase _imageService;
 
-        public CreatePostCommandHandler(IMapper mapper, IPostRepository postRepository, IBlogService blogService)
+        public CreatePostCommandHandler(IMapper mapper, IPostRepository postRepository, IBlogService blogService, ImageServiceBase imageService)
         {
             _mapper = mapper;
             _postRepository = postRepository;
             _blogService = blogService;
             _postRepository = postRepository;
+            _imageService = imageService;
         }
 
         public async Task<CreatedPostResponse> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
             Post post = _mapper.Map<Post>(request);
             post.Slug = GenerateSlug(request.Title);
+
+            string imageUrl = await _imageService.UploadAsync(request.CoverImage);
+
+            post.CoverImageURL = imageUrl;
 
             Post savedPost = await _postRepository.AddAsync(post);
 

@@ -6,7 +6,7 @@ using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 using Persistence.Repositories.Abstractions;
 
-namespace Application.Features.Posts.Queries.GetListByAuthorId;
+namespace Application.Features.Posts.Queries.GetListByBlogId;
 
 public class GetListByBlogIdPostQuery : IRequest<GetListResponse<GetListByBlogIdPostDto>>
 {

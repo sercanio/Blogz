@@ -1,11 +1,9 @@
 using Application;
+using Infrastructure;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Configurations;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddPersistenceServices(builder.Configuration);
-
 
 builder.Services.AddApplicationServices(
     fileLogConfiguration: builder
@@ -13,6 +11,11 @@ builder.Services.AddApplicationServices(
         .Get<FileLogConfiguration>()
         ?? throw new InvalidOperationException("FileLogConfiguration section cannot found in configuration.")
 );
+
+builder.Services.AddPersistenceServices(builder.Configuration);
+
+builder.Services.AddInfrastructureServices();
+
 
 builder.Services.AddLogging();
 
@@ -23,7 +26,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddAntiforgery(opt => opt.Cookie.Name = "X-CSRF-TOKEN");
 
 builder.Services.AddWebOptimizer();
-
 
 
 builder.Services.ConfigureApplicationCookie(opt =>
