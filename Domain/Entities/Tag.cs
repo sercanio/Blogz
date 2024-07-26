@@ -7,4 +7,5 @@ public class Tag : Entity<Guid>
     public string Name { get; set; }
     public string NormalizedName { get; set; }
     public string Description { get; set; }
+    public ICollection<Post> Posts { get; set; }
 }
