@@ -15,7 +15,7 @@ public class HomeController : BaseController
         _logger = logger;
     }
 
-    public async Task<IActionResult> Index(int pageIndex = 0, int pageSize = 10)
+    public async Task<IActionResult> Index(int pageIndex = 0, int pageSize = 6)
     {
         GetListPostQuery query = new GetListPostQuery { PageRequest = new PageRequest { PageIndex = pageIndex, PageSize = pageSize } };
         GetListResponse<GetListPostDto> response = await Mediator.Send(query);

@@ -1,6 +1,5 @@
 ﻿using Application.Features.Authors.Queries.GetById;
-
-namespace Blogz.Models;
+using Blogz.Models;
 
 public class EditPostViewModel
 {
@@ -10,5 +9,6 @@ public class EditPostViewModel
     public bool IsPublic { get; set; }
     public GetByIdAuthorResponse Author { get; set; }
     public BlogViewModel Blog { get; set; }
-
+    public string CoverImageUrl { get; set; }
+    public IFormFile? CoverImage { get; set; }
 }

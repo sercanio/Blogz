@@ -27,7 +27,7 @@ namespace Blogz.Controllers
         }
 
         [HttpGet("blogs/{username}")]
-        public async Task<IActionResult> Blog(string username)
+        public async Task<IActionResult> Blog(string username, int pageIndex = 0, int pageSize = 6)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -44,8 +44,8 @@ namespace Blogz.Controllers
                 BlogId = author.Blog.Id,
                 PageRequest = new PageRequest()
                 {
-                    PageIndex = 0,
-                    PageSize = 10
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
                 }
             };
 
@@ -59,6 +59,7 @@ namespace Blogz.Controllers
 
             return View(viewModel);
         }
+
 
         [HttpPost("blogs/{username}/UpdateBiography")]
         [ValidateAntiForgeryToken]

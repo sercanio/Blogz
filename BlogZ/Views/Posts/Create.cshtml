@@ -34,7 +34,7 @@
         </textarea>
     </div>
     <div class="form-group mt-2">
-        <label asp-for="CoverImage" class="control-label">Cover Image</label>
+        <label asp-for="CoverImage" class="control-label">Cover Image (Optional)</label>
         <input asp-for="CoverImage" type="file" class="form-control" />
         <span asp-validation-for="CoverImage" class="text-danger"></span>
     </div>
@@ -44,7 +44,6 @@
 </form>
 
 @section Scripts {
-    <!-- Place the first <script> tag in your HTML's <head> -->
     <script src="https://cdn.tiny.cloud/1/dmjmi2i6ow7orwe5hnliu17c9jgmzwy5gdjb59qctogrnve6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -60,11 +59,9 @@
                     content_css: theme === 'dark' ? 'dark' : 'default'
                 });
             }
-            // Assuming you have a function to get the current theme
             var currentTheme = document.documentElement.getAttribute("data-bs-theme");
             initializeTinyMCE(currentTheme);
 
-            // Listen for changes to the theme
             var observer = new MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'data-bs-theme') {

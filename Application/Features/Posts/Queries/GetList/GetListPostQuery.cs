@@ -30,6 +30,7 @@ public class GetListPostQuery : IRequest<GetListResponse<GetListPostDto>>
                 include: p => p.Include(p => p.Blog).ThenInclude(b => b.Author).ThenInclude(a => a.User),
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                orderBy: p => p.OrderByDescending(p => p.CreatedDate),
                 cancellationToken: cancellationToken
             );
 

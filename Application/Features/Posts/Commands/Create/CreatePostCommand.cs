@@ -20,7 +20,6 @@ public class CreatePostCommand : IRequest<CreatedPostResponse>, ILoggableRequest
     public bool IsPublic { get; set; } = true;
     public IFormFile? CoverImage { get; set; }
 
-
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, CreatedPostResponse>
     {
         private readonly IMapper _mapper;
@@ -42,33 +41,25 @@ public class CreatePostCommand : IRequest<CreatedPostResponse>, ILoggableRequest
             Post post = _mapper.Map<Post>(request);
             post.Slug = GenerateSlug(request.Title);
 
-            string imageUrl = await _imageService.UploadAsync(request.CoverImage);
-
-            post.CoverImageURL = imageUrl;
+            if (request.CoverImage != null)
+            {
+                string imageUrl = await _imageService.UploadAsync(request.CoverImage);
+                post.CoverImageURL = imageUrl;
+            }
 
             Post savedPost = await _postRepository.AddAsync(post);
-
             CreatedPostResponse response = _mapper.Map<CreatedPostResponse>(savedPost);
 
             return response;
         }
+
+        private static string GenerateSlug(string title)
+        {
+            string slug = title.ToLowerInvariant();
+            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");
+            slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
+            slug = slug.Trim('-');
+            return slug;
+        }
     }
-
-    private static string GenerateSlug(string title)
-    {
-        // Convert to lowercase
-        string slug = title.ToLowerInvariant();
-
-        // Remove invalid characters
-        slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");
-
-        // Replace spaces with hyphens
-        slug = Regex.Replace(slug, @"\s+", "-").Trim('-');
-
-        // Trim hyphens from start and end
-        slug = slug.Trim('-');
-
-        return slug;
-    }
-
 }

@@ -30,6 +30,7 @@ public class GetListByBlogIdPostQuery : IRequest<GetListResponse<GetListByBlogId
                 predicate: p => p.BlogId == request.BlogId,
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize,
+                orderBy: p => p.OrderByDescending(p => p.CreatedDate),
                 cancellationToken: cancellationToken
             );
 

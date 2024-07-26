@@ -52,10 +52,40 @@ namespace Blogz.Controllers
             return View(viewModel);
         }
 
+        //[HttpPost("posts/{username}/create")]
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(string username, CreatePostCommand model, IFormFile coverImage)
+        //{
+        //    if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
+        //    if (User.Identity.Name != username) return Forbid();
+
+        //    if (!ModelState.IsValid) return View(model); // Ensure model is correctly passed to view
+
+        //    IdentityUser? user = await _userManager.FindByNameAsync(username);
+        //    if (user == null) return NotFound();
+
+        //    var authorQuery = new GetByUserIdAuthorQuery { UserId = user.Id };
+        //    var author = await _mediator.Send(authorQuery);
+        //    if (author == null) return NotFound("Author not found");
+
+        //    var command = new CreatePostCommand
+        //    {
+        //        Title = model.Title,
+        //        Content = model.Content,
+        //        BlogId = author.Blog.Id,
+        //        IsPublic = model.IsPublic,
+        //        CoverImage = coverImage
+        //    };
+
+        //    var result = await _mediator.Send(command);
+        //    return RedirectToAction("Post", new { username, slug = result.Slug });
+        //}
+
         [HttpPost("posts/{username}/create")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string username, CreatePostCommand model, IFormFile coverImage)
+        public async Task<IActionResult> Create(string username, CreatePostCommand model, IFormFile? coverImage)
         {
             if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
             if (User.Identity.Name != username) return Forbid();
@@ -75,12 +105,13 @@ namespace Blogz.Controllers
                 Content = model.Content,
                 BlogId = author.Blog.Id,
                 IsPublic = model.IsPublic,
-                CoverImage = coverImage
+                CoverImage = coverImage // Optional cover image
             };
 
             var result = await _mediator.Send(command);
             return RedirectToAction("Post", new { username, slug = result.Slug });
         }
+
 
         [HttpGet("posts/{username}/edit/{slug}")]
         public async Task<IActionResult> Edit(string username, string slug)
@@ -122,6 +153,7 @@ namespace Blogz.Controllers
                 Slug = post.Slug,
                 IsPublic = post.IsPublic,
                 Author = author,
+                CoverImageUrl = post.CoverImageURL,
                 Blog = new BlogViewModel()
                 {
                     Author = author
@@ -130,7 +162,6 @@ namespace Blogz.Controllers
 
             return View(viewModel);
         }
-
 
         [HttpPost("posts/{username}/edit/{slug}")]
         [Authorize]
@@ -147,13 +178,13 @@ namespace Blogz.Controllers
                 return Forbid();
             }
 
-            GetBySlugPostQuery postQuery = new() { Slug = slug };
-            GetBySlugPostResponse? post = await _mediator.Send(postQuery);
-
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
+            var postQuery = new GetBySlugPostQuery { Slug = slug };
+            var post = await _mediator.Send(postQuery);
 
             if (post == null)
             {
@@ -166,12 +197,15 @@ namespace Blogz.Controllers
                 Title = model.Title,
                 Content = model.Content,
                 IsPublic = model.IsPublic,
+                CoverImage = model.CoverImage
             };
 
             await _mediator.Send(command);
 
             return RedirectToAction("Post", new { username, slug });
         }
+
+
 
         [HttpDelete("posts/delete/{slug}")]
         [Authorize]

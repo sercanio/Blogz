@@ -8,9 +8,12 @@
 
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="col-md-10 col-lg-9">
             <!-- Post content -->
             <article class="w-100 d-flex flex-column gap-2">
+                <!-- Post Cover Image -->
+                <img src="@(string.IsNullOrEmpty(Model?.Post?.CoverImageURL) ? Url.Content("~/assets/img/default-cover.png") : Model.Post.CoverImageURL)" alt="Post cover image" class="img-fluid mb-4" />
+
                 <h1 class="post-title">@Model?.Post?.Title</h1>
 
                 <!-- Display Post Public Status and Delete Icon -->
@@ -48,7 +51,6 @@
                             <a href="@Url.Action("Edit", "Posts", new { username = Model.Author.User.UserName, slug = Model.Post.Slug })" class="ml-auto">Edit Post</a>
                         </div>
                     }
-
                 }
                 <!-- Divider -->
                 <hr class="my-4" />
@@ -82,6 +84,5 @@
                 });
             }
         }
-
     </script>
 }
