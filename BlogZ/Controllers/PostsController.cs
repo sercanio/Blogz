@@ -52,36 +52,6 @@ namespace Blogz.Controllers
             return View(viewModel);
         }
 
-        //[HttpPost("posts/{username}/create")]
-        //[Authorize]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(string username, CreatePostCommand model, IFormFile coverImage)
-        //{
-        //    if (string.IsNullOrEmpty(username)) return BadRequest("Username cannot be null or empty");
-        //    if (User.Identity.Name != username) return Forbid();
-
-        //    if (!ModelState.IsValid) return View(model); // Ensure model is correctly passed to view
-
-        //    IdentityUser? user = await _userManager.FindByNameAsync(username);
-        //    if (user == null) return NotFound();
-
-        //    var authorQuery = new GetByUserIdAuthorQuery { UserId = user.Id };
-        //    var author = await _mediator.Send(authorQuery);
-        //    if (author == null) return NotFound("Author not found");
-
-        //    var command = new CreatePostCommand
-        //    {
-        //        Title = model.Title,
-        //        Content = model.Content,
-        //        BlogId = author.Blog.Id,
-        //        IsPublic = model.IsPublic,
-        //        CoverImage = coverImage
-        //    };
-
-        //    var result = await _mediator.Send(command);
-        //    return RedirectToAction("Post", new { username, slug = result.Slug });
-        //}
-
         [HttpPost("posts/{username}/create")]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -163,6 +133,7 @@ namespace Blogz.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost("posts/{username}/edit/{slug}")]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -204,8 +175,6 @@ namespace Blogz.Controllers
 
             return RedirectToAction("Post", new { username, slug });
         }
-
-
 
         [HttpDelete("posts/delete/{slug}")]
         [Authorize]
@@ -262,6 +231,8 @@ namespace Blogz.Controllers
             var author = post.Blog?.Author;
             if (author == null) return NotFound();
 
+            var comments = post.Comments;
+
             var viewModel = new PostViewModel
             {
                 Post = post,
@@ -269,9 +240,12 @@ namespace Blogz.Controllers
                 Blog = new BlogViewModel
                 {
                     Author = author
-                }
+                },
+                Comments = comments.ToList()
             };
+
             return View(viewModel);
         }
+
     }
 }

@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Authors\Commands\NewFolder\**" />
+    <EmbeddedResource Remove="Features\Authors\Commands\NewFolder\**" />
+    <None Remove="Features\Authors\Commands\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="AutoMapper" Version="13.0.1" />
 	  <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
 	  <PackageReference Include="MediatR" Version="12.2.0" />
@@ -26,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Authors\Commands\NewFolder\" />
     <Folder Include="Features\Authors\Queries\" />
   </ItemGroup>
 
