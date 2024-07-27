@@ -10,6 +10,7 @@ using NArchitecture.Core.CrossCuttingConcerns.Logging.Abstraction;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Configurations;
 using NArchitecture.Core.CrossCuttingConcerns.Logging.Serilog.File;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Application;
 
@@ -31,26 +32,15 @@ public static class ApplicationServiceRegistration
             configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));
         });
 
-        //services.AddSubClassesOfType(Assembly.GetExecutingAssembly(), typeof(BaseBusinessRules));
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        });
 
         services.AddSingleton<ILogger, SerilogFileLogger>(_ => new SerilogFileLogger(fileLogConfiguration));
 
         services.AddScoped<IAuthorService, AuthorManager>();
         services.AddScoped<IBlogService, BlogManager>();
-
-        //services.TryAddScoped<IUserValidator<IdentityUser>, UserValidator<IdentityUser>>();
-        //services.TryAddScoped<IPasswordValidator<IdentityUser>, PasswordValidator<IdentityUser>>();
-        //services.TryAddScoped<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
-        //services.TryAddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
-        //services.TryAddScoped<IRoleValidator<IdentityRole>, RoleValidator<IdentityRole>>();
-        //// No interface for the error describer so we can add errors without rev'ing the interface
-        //services.TryAddScoped<IdentityErrorDescriber>();
-        //services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<IdentityUser>>();
-        //services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<IdentityUser>>();
-        //services.TryAddScoped<IUserClaimsPrincipalFactory<IdentityUser>, UserClaimsPrincipalFactory<IdentityUser, IdentityRole>>();
-        //services.TryAddScoped<UserManager<IdentityUser>>();
-        //services.TryAddScoped<SignInManager<IdentityUser>>();
-        //services.TryAddScoped<RoleManager<IdentityRole>>();
 
         return services;
     }

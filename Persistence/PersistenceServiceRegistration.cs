@@ -16,10 +16,6 @@ public static class PersistenceServiceRegistration
         services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        //services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        //     .AddRoles<IdentityRole>()
-        //     .AddEntityFrameworkStores<ApplicationDbContext>();
-
         services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -30,6 +26,7 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IBlogRepository, BlogRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
 
         return services;
     }

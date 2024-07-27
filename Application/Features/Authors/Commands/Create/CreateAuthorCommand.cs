@@ -55,5 +55,4 @@ public class CreateAuthorCommand : IRequest<CreatedAuthorResponse>, ILoggableReq
             return response;
         }
     }
-
 }

@@ -20,11 +20,14 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
 
         builder.HasIndex(a => a.UserId).IsUnique();
 
-        builder.HasOne(a => a.User);
+        builder.HasOne(a => a.User)
+               .WithMany()
+               .HasForeignKey(a => a.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(a => a.Blog)
-            .WithOne(b => b.Author)
-            .HasForeignKey<Author>(a => a.BlogId);
+               .WithOne(b => b.Author)
+               .HasForeignKey<Author>(a => a.BlogId);
 
         builder.HasQueryFilter(a => !a.DeletedDate.HasValue);
     }

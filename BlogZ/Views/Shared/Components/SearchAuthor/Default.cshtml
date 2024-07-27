@@ -1,0 +1,55 @@
+﻿@using WebUI.Models
+@model SearchAuthorViewModel
+
+<div class="container searchbar-container">
+    <!-- Search Bar -->
+    <div class="input-group position-relative">
+        <input type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Search authors..." required>
+        <button id="searchButton" class="btn btn-new-post" type="button">Search</button>
+    </div>
+
+    <!-- Search Results -->
+    <div id="searchResultsContainer" class="position-absolute w-100 mt-2" style="display: none;">
+        <div id="searchResults" class="list-group"></div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchButton').on('click', function () {
+            var searchTerm = $('#searchTerm').val();
+
+            if (searchTerm.length < 1) {
+                alert("Please enter at least 1 character to search.");
+                return;
+            }
+
+            console.log(searchTerm);
+            var dynamicQuery = {
+                sort: [{ field: "userName", dir: "asc" }],
+                filter: { field: "userName", operator: "contains", value: searchTerm }
+            };
+
+            console.log('Sending AJAX request with:', dynamicQuery);
+
+            $.ajax({
+                url: '/AuthorSearch/Search',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dynamicQuery),
+                success: function (data) {
+                    console.log('AJAX success:', data);
+                    $('#searchResults').html(data);
+                    $('#searchResultsContainer').show();
+                    $('#closeSearchResults').on('click', function () {
+                        $('#searchResults').html('');
+                        $('#searchResultsContainer').hide();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                }
+            });
+        });
+    });
+</script>

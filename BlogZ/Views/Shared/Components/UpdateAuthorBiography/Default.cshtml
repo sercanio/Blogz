@@ -1,0 +1,16 @@
+﻿@model UpdateAuthorBiographyViewModel
+
+<div id="biography-editor" class="biography-editor" style="display: none;">
+    <form asp-controller="Blogs" asp-action="UpdateBiography" asp-route-username="@Model.Author.User.UserName" method="post">
+        <textarea asp-for="Biography" class="form-control" rows="3">@Model.Biography</textarea>
+        <input type="hidden" name="Id" value="@Model.Author.Id" />
+        <button type="submit" class="btn btn-new-post mt-2">Save</button>
+    </form>
+</div>
+
+<script>
+    function showBiographyEditor() {
+        var editor = document.getElementById('biography-editor');
+        editor.style.display = editor.style.display === 'none' ? 'block' : 'none';
+    }
+</script>

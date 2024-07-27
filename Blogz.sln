@@ -5,11 +5,13 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "Blogz\WebUI.csproj", "{1D72E4E9-2D1F-471B-B2EE-18F8217E635F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{2ADD7311-B23F-4342-9299-07D25835FB91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{2ADD7311-B23F-4342-9299-07D25835FB91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{4537DE4E-FE73-489A-9AD0-06414342FBE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{4537DE4E-FE73-489A-9AD0-06414342FBE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{9E29AB92-FC9C-4887-B853-75F74EA6902E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{9E29AB92-FC9C-4887-B853-75F74EA6902E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructrure", "Infrastructrure\Infrastructrure.csproj", "{737B3652-9C04-4330-B165-BBC3A785E46D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{9E29AB92-FC9C-4887-B853-75F74EA6902E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E29AB92-FC9C-4887-B853-75F74EA6902E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E29AB92-FC9C-4887-B853-75F74EA6902E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737B3652-9C04-4330-B165-BBC3A785E46D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737B3652-9C04-4330-B165-BBC3A785E46D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737B3652-9C04-4330-B165-BBC3A785E46D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737B3652-9C04-4330-B165-BBC3A785E46D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

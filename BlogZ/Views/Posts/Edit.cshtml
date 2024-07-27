@@ -1,4 +1,4 @@
-﻿@model Blogz.Models.CreatePostViewModel
+﻿@model EditPostViewModel
 
 @{
     ViewData["Title"] = "Edit Post";
@@ -6,9 +6,17 @@
 
 <h1>Edit Post</h1>
 
-<partial name="_BlogHeaderPartial" />
+@if (Model?.Blog != null)
+{
+    <partial name="_BlogHeaderPartial" model="Model.Blog" />
+}
+else
+{
+    <p class="text-danger">Blog information is missing.</p>
+}
 
-<form asp-action="Edit" method="post" class="form-horizontal col-sm-12 col-md-8 mx-auto">
+<form asp-area="" asp-controller="Posts" asp-action="Edit" asp-route-username="@Model?.Author?.User?.UserName" asp-route-slug="@Model?.Slug" method="post" enctype="multipart/form-data" class="form-horizontal col-sm-12 col-md-8 mx-auto">
+    <input type="hidden" asp-for="Author.Id" />
     <div class="form-group d-flex gap-2 align-items-center">
         <div class="flex-fill">
             <label asp-for="Title" class="control-label"></label>
@@ -26,17 +34,28 @@
     <div class="form-group mt-2">
         <label asp-for="Content" class="control-label"></label>
         <span asp-validation-for="Content" class="text-danger"></span>
-        <textarea asp-for="Content" class="form-control">
-            @Model.Content
-        </textarea>
+        <textarea asp-for="Content" class="form-control">@Model?.Content</textarea>
     </div>
+    <div class="form-group mt-2">
+        <label asp-for="CoverImage" class="control-label">Cover Image</label>
+        <input asp-for="CoverImage" type="file" class="form-control" />
+        <span asp-validation-for="CoverImage" class="text-danger"></span>
+    </div>
+    @if (!string.IsNullOrEmpty(Model?.CoverImageUrl))
+    {
+        <div class="form-group mt-2">
+            <label class="control-label">Current Cover Image</label>
+            <div>
+                <img src="@Model.CoverImageUrl" alt="Cover Image" class="img-thumbnail" />
+            </div>
+        </div>
+    }
     <div class="form-group mt-3">
         <input type="submit" value="Update" class="btn btn-new-post" />
     </div>
 </form>
 
 @section Scripts {
-    <!-- Place the first <script> tag in your HTML's <head> -->
     <script src="https://cdn.tiny.cloud/1/dmjmi2i6ow7orwe5hnliu17c9jgmzwy5gdjb59qctogrnve6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

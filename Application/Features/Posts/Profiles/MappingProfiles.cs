@@ -1,7 +1,9 @@
-﻿using Application.Features.Posts.Commands.Create;
+﻿using Application.Features.Entries.Commands.Update;
+using Application.Features.Posts.Commands.Create;
 using Application.Features.Posts.Queries.GetById;
 using Application.Features.Posts.Queries.GetBySlug;
-using Application.Features.Posts.Queries.GetListByAuthorId;
+using Application.Features.Posts.Queries.GetList;
+using Application.Features.Posts.Queries.GetListByBlogId;
 using AutoMapper;
 using Domain.Entities;
 using NArchitecture.Core.Application.Responses;
@@ -17,10 +19,16 @@ public class MappingProfiles : Profile
         CreateMap<CreatePostCommand, Post>();
         CreateMap<Post, CreatedPostResponse>();
 
+        CreateMap<UpdatePostCommand, Post>();
+        CreateMap<Post, UpdatePostResponse>();
+
         CreateMap<Post, GetByIdPostResponse>();
         CreateMap<Post, GetBySlugPostResponse>();
 
         CreateMap<Post, GetListByBlogIdPostDto>();
         CreateMap<IPaginate<Post>, GetListResponse<GetListByBlogIdPostDto>>();
+
+        CreateMap<Post, GetListPostDto>();
+        CreateMap<IPaginate<Post>, GetListResponse<GetListPostDto>>();
     }
 }

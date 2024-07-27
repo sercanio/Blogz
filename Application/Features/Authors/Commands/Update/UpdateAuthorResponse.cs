@@ -1,11 +1,11 @@
-using Domain.Entities;
-using NArchitecture.Core.Application.Dtos;
+﻿using Domain.Entities;
+using NArchitecture.Core.Application.Responses;
 
-namespace Application.Features.Posts.Queries.GetListByAuthorId;
+namespace Application.Features.Authors.Commands.Update;
 
-public class GetListByBlogIdPostDto : IDto
+public class UpdatedAuthorResponse : IResponse
 {
-    public Guid Id { get; set; }
+    public Guid BlogId { get; set; }
     public string Title { get; set; }
     public string Content { get; set; }
     public string Slug { get; set; }
@@ -13,6 +13,7 @@ public class GetListByBlogIdPostDto : IDto
     public string CoverImageURL { get; set; }
     public DateTime CreatedDate { get; set; }
 
+    public Blog Blog { get; set; }
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Tag> Tags { get; set; }
 }

@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Authors\Commands\NewFolder\**" />
+    <EmbeddedResource Remove="Features\Authors\Commands\NewFolder\**" />
+    <None Remove="Features\Authors\Commands\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="AutoMapper" Version="13.0.1" />
+	  <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
 	  <PackageReference Include="MediatR" Version="12.2.0" />
 	  <PackageReference Include="NArchitecture.Core.Application" Version="1.0.5" />
 	  <PackageReference Include="NArchitecture.Core.CrossCuttingConcerns.Exception" Version="1.0.1" />

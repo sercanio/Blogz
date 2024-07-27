@@ -1,0 +1,20 @@
+﻿@model List<Domain.Entities.Author>
+
+<div class="list-group">
+    <button id="closeSearchResults" class="list-group-item list-group-item-action d-flex align-items-center">Close</button>
+    @if (Model != null && Model.Any())
+    {
+        foreach (var author in Model)
+        {
+            var profileImageUrl = !string.IsNullOrEmpty(author.ProfileImageURL) ? author.ProfileImageURL : "https://picsum.photos/100/100";
+            <a href="@Url.Action("Blog", "Blogs", new { username = author.User.UserName })" class="list-group-item list-group-item-action d-flex align-items-center">
+                <img src="@profileImageUrl" alt="@author.User.UserName's avatar" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
+                @author.User.UserName
+            </a>
+        }
+    }
+    else
+    {
+        <p class="list-group-item list-group-item-action d-flex align-items-center">No authors found.</p>
+    }
+</div>

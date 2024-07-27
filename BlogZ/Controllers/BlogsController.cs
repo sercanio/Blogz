@@ -1,6 +1,7 @@
-﻿using Application.Features.Authors.Queries.GetById;
+﻿using Application.Features.Authors.Commands.Update;
+using Application.Features.Authors.Queries.GetById;
 using Application.Features.Authors.Queries.GetByUserId;
-using Application.Features.Posts.Queries.GetListByAuthorId;
+using Application.Features.Posts.Queries.GetListByBlogId;
 using Application.Services.Blogs;
 using Blogz.Models;
 using MediatR;
@@ -25,15 +26,8 @@ namespace Blogz.Controllers
             _blogService = blogService;
         }
 
-        public IActionResult Index()
-        {
-            // Get all blogs (replace with specific logic if needed)
-            //var blogs = _blogService.GetAllBlogs();
-
-            return View(); // Pass the list of blogs to the view
-        }
-
-        public async Task<IActionResult> Blog(string username)
+        [HttpGet("blogs/{username}")]
+        public async Task<IActionResult> Blog(string username, int pageIndex = 0, int pageSize = 6)
         {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -47,10 +41,11 @@ namespace Blogz.Controllers
 
             GetListByBlogIdPostQuery blogPostsQuery = new()
             {
+                BlogId = author.Blog.Id,
                 PageRequest = new PageRequest()
                 {
-                    PageIndex = 0,
-                    PageSize = 10
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
                 }
             };
 
@@ -65,9 +60,31 @@ namespace Blogz.Controllers
             return View(viewModel);
         }
 
-        // You can add additional actions here for functionalities like:
-        // - Creating new blog posts
-        // - Editing existing blog posts
-        // - Deleting blog posts (if applicable)
+
+        [HttpPost("blogs/{username}/UpdateBiography")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateBiography(string username, UpdateAuthorCommand model)
+        {
+            if (ModelState.IsValid)
+            {
+                UpdateAuthorCommand command = new()
+                {
+                    Id = model.Id,
+                    Biography = model.Biography
+                };
+
+                var response = await _mediator.Send(command);
+
+                if (response != null)
+                {
+                    return RedirectToAction("Blog", "Blogs", new { username });
+                }
+
+                ModelState.AddModelError(string.Empty, "Failed to update biography.");
+            }
+
+            return RedirectToAction("Blog", "Blogs", new { username });
+        }
+
     }
 }

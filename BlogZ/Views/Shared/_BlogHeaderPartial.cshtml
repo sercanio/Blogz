@@ -1,4 +1,6 @@
-﻿<div class="card border-0 mb-5">
+﻿@model BlogViewModel
+
+<div class="card border-0 mb-5">
     <div class="card-body d-flex flex-column gap-4 border-0">
         <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center justify-content-flex-start gap-3">
@@ -19,7 +21,14 @@
             </div>
         </div>
         <div class="d-flex justify-content-between">
-            <em class="">@Model.Author.Biography</em>
+            <div>
+                <em class="">@Model.Author.Biography</em>
+                @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Author.User.UserName)
+                {
+                    <i class="bi bi-pencil-square" style="cursor: pointer;" onclick="showBiographyEditor()"></i>
+                    @await Component.InvokeAsync("UpdateAuthorBiography", new { author = Model.Author })
+                }
+            </div>
             @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.Author.User.UserName)
             {
                 <div class="mt-3">

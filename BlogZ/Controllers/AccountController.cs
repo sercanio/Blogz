@@ -137,6 +137,11 @@ public class AccountController : Controller
         return View("Register", model);
     }
 
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
 
     [HttpGet]
     public IActionResult Lockout()
